@@ -54,4 +54,4 @@ namespace utils {
         std::string Message;
         bool Verbose;
     };
-}
+} // namespace utils

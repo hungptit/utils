@@ -70,36 +70,20 @@ endif()
 
 add_cxx_compiler_flag(-DFMT_HEADER_ONLY)
 add_cxx_compiler_flag(-DCEREAL_RAPIDJSON_HAS_CXX11_RVALUE_REFS)
-# add_cxx_compiler_flag(-flto)
+add_cxx_compiler_flag(-flto)
 
 ENABLE_TESTING()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Libraries used by rocksdb
-set(LIB_CELERO "${EXTERNAL_DIR}/lib/libcelero.a")
-set(LIB_JEMALLOC "${EXTERNAL_DIR}/lib/libjemalloc.a")
-
-# This option make sure that we use the local boost version. Note that if the
-# system boost is installed then CMake might use that boost version.
-set(Boost_USE_STATIC_LIBS ON)
-set(Boost_USE_MULTITHREADED ON)
-set(Boost_USE_STATIC_RUNTIME OFF)
-set(Boost_NO_SYSTEM_PATHS FALSE)
-if (Boost_NO_SYSTEM_PATHS)
-  set(BOOST_ROOT "${EXTERNAL_DIR}")
-  set(BOOST_INCLUDE_DIRS "${BOOST_ROOT}/include")
-  set(BOOST_LIBRARY_DIRS "${BOOST_ROOT}/lib")
-endif (Boost_NO_SYSTEM_PATHS)
-# message(${BOOST_ROOT})
-find_package(Boost REQUIRED system filesystem iostreams)
-
-# Include folder
+# Include other headers such as fmt library.
 include_directories ("${EXTERNAL_DIR}/include")
+
+# Include utils headers
 include_directories ("${ROOT_DIR}/src")
 
 set(COMMAND_SRC_FILES timeutils)
 foreach (src_file ${COMMAND_SRC_FILES})
   ADD_EXECUTABLE(${src_file} ${src_file}.cpp)
-  TARGET_LINK_LIBRARIES(${src_file} ${LIB_CELERO} ${Boost_LIBRARIES} -lpthread -lm -lc)
+  TARGET_LINK_LIBRARIES(${src_file} -lpthread -lm)
   ADD_TEST(${src_file} ./${src_file})
 endforeach (src_file)

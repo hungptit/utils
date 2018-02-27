@@ -1,12 +1,12 @@
 #pragma once
 
-#include <string>
 #include <ctime>
+#include <string>
 
 namespace utils {
     // A simple parser for timestamp.
     class TimeParser {
-	public:
+      public:
         TimeParser(const std::string &fmt) : format(fmt) {}
         std::time_t operator()(const char *timestr) {
             strptime(timestr, format.c_str(), &timestamp);
@@ -14,13 +14,13 @@ namespace utils {
             return mktime(&timestamp);
         }
 
-	private:
+      private:
         std::string format;
         struct tm timestamp;
     };
 
-	// A simple time printer class.
-	struct TimePrinter {
+    // A simple time printer class.
+    struct TimePrinter {
         TimePrinter(const std::string &fmt) : format(fmt) {}
 
         void operator()(const std::time_t t) {
@@ -36,4 +36,4 @@ namespace utils {
         static constexpr size_t buffer_size = 255;
         char buffer[buffer_size];
     };
-}
+} // namespace utils
