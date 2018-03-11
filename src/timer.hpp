@@ -45,7 +45,7 @@ namespace utils {
         ~ElapsedTime() {
             if (Verbose) {
                 std::cout << Message << LocalTimer.toc() * val / LocalTimer.ticksPerSecond()
-                          << " " << getUnitString<val>() << std::endl;
+                          << getUnitString<val>() << std::endl;
             }
         }
 
