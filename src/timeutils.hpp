@@ -23,13 +23,15 @@ namespace utils {
     struct TimePrinter {
         TimePrinter(const std::string &fmt) : format(fmt) {}
 
-        void operator()(const std::time_t t) {
+        const char* operator()(const std::time_t t) {
             struct tm *timestamp = localtime(&t);
             strftime(buffer, buffer_size, format.c_str(), timestamp);
+			return buffer;
         }
 
-        void operator()(const struct tm *timestamp) {
+        const char *operator()(const struct tm *timestamp) {
             strftime(buffer, buffer_size, format.c_str(), timestamp);
+            return buffer;
         }
 
         std::string format;
