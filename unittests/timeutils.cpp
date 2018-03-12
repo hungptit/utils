@@ -2,12 +2,11 @@
 #include <string>
 
 #include "timeutils.hpp"
+#include "timer.hpp"
 #include <time.h>
 
 #define CATCH_CONFIG_MAIN
 #include "catch/catch.hpp"
-
-const std::string datafile("data.log");
 
 TEST_CASE("Parsing time strings", "Positive") {
     utils::TimeParser parser("%Y-%m-%d %H:%M:%S");

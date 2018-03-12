@@ -5,53 +5,52 @@
 
 namespace utils {
     enum DispOpt { MICROSECOND = 1000000, MILLISECOND = 1000, SECOND = 1 };
-    template <DispOpt val> std::string getUnitString();
-
-    template <> std::string getUnitString<MICROSECOND>() { return " microseconds"; }
-    template <> std::string getUnitString<MILLISECOND>() { return " milliseconds"; }
-    template <> std::string getUnitString<SECOND>() { return " seconds"; }
+    template <DispOpt val> std::string get_unit_string();
+    template <> std::string get_unit_string<MICROSECOND>() { return " microseconds"; }
+    template <> std::string get_unit_string<MILLISECOND>() { return " milliseconds"; }
+    template <> std::string get_unit_string<SECOND>() { return " seconds"; }
 
     class Timer {
       public:
         Timer() {
             tic();
-            TicksPerSeconds = clock::duration::period::den / clock::duration::period::num;
+            ticks_per_seconds = clock::duration::period::den / clock::duration::period::num;
         }
 
         Timer(Timer &) = delete;
         Timer(Timer &&) = delete;
         Timer &operator=(Timer &) = delete;
 
-        void tic() { StartTime = clock::now(); }
+        void tic() { start_time = clock::now(); }
 
-        auto toc() const { return (clock::now() - StartTime).count(); }
+        auto toc() const { return (clock::now() - start_time).count(); }
 
-        auto ticksPerSecond() const { return TicksPerSeconds; }
+        auto ticksPerSecond() const { return ticks_per_seconds; }
 
       private:
         using clock = std::chrono::high_resolution_clock;
-        clock::time_point StartTime;
-        double TicksPerSeconds;
+        clock::time_point start_time;
+        double ticks_per_seconds;
     };
 
     template <DispOpt val = SECOND> class ElapsedTime {
       public:
-        explicit ElapsedTime() : LocalTimer(), Message("Elapsed time: "), Verbose(true) {}
+        explicit ElapsedTime() : local_timer(), message("Elapsed time: "), verbose(true) {}
         explicit ElapsedTime(const std::string &msg)
-            : LocalTimer(), Message(msg), Verbose(true) {}
+            : local_timer(), message(msg), verbose(true) {}
         explicit ElapsedTime(const std::string &msg, bool verbose)
-            : LocalTimer(), Message(msg), Verbose(verbose) {}
+            : local_timer(), message(msg), verbose(verbose) {}
 
         ~ElapsedTime() {
-            if (Verbose) {
-                std::cout << Message << LocalTimer.toc() * val / LocalTimer.ticksPerSecond()
-                          << getUnitString<val>() << std::endl;
+            if (verbose) {
+                std::cout << message << local_timer.toc() * val / local_timer.ticksPerSecond()
+                          << get_unit_string<val>() << std::endl;
             }
         }
 
       private:
-        Timer LocalTimer;
-        std::string Message;
-        bool Verbose;
+        Timer local_timer;
+        std::string message;
+        bool verbose;
     };
 } // namespace utils
