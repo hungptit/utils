@@ -22,10 +22,8 @@ namespace utils {
         Timer &operator=(Timer &) = delete;
 
         void tic() { start_time = clock::now(); }
-
         auto toc() const { return (clock::now() - start_time).count(); }
-
-        auto ticksPerSecond() const { return ticks_per_seconds; }
+        auto ticks_per_second() const { return ticks_per_seconds; }
 
       private:
         using clock = std::chrono::high_resolution_clock;
@@ -43,7 +41,7 @@ namespace utils {
 
         ~ElapsedTime() {
             if (verbose) {
-                std::cout << message << local_timer.toc() * val / local_timer.ticksPerSecond()
+                std::cout << message << local_timer.toc() * val / local_timer.ticks_per_second()
                           << get_unit_string<val>() << std::endl;
             }
         }
