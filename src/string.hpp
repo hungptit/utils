@@ -1,3 +1,6 @@
+// This file has Wojciech Mula's sse2 and avx2 implementations of strstr
+// functions. See this page https://github.com/WojciechMula/sse4-strstr for more
+// information.
 #pragma once
 #include <cassert>
 #include <cinttypes>
