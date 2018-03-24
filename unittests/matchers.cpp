@@ -79,3 +79,39 @@ TEST_CASE("Equals-sse2", "") {
     CHECK(!cons(line2));
     CHECK(cons(line3));
 }
+
+TEST_CASE("StartsWith-avx2", "") {
+    const std::string pattern("This");
+    const std::string line1("This is the first line!");
+    const std::string line2("Thisn't the first line!");
+    const std::string line3("My first line!");
+    const char *foo = NULL;
+    utils::sse2::StartsWith cons(pattern);
+    CHECK(cons(line1));
+    CHECK(cons(line2));
+    CHECK(!cons(line3));
+}
+
+TEST_CASE("Contains-avx2", "") {
+    const std::string pattern("the");
+    const std::string line1("This is the first line!");
+    const std::string line2("Thisn't the first line!");
+    const std::string line3("My first line!");
+    const char *foo = NULL;
+    utils::sse2::Contains cons(pattern);
+    CHECK(cons(line1));
+    CHECK(cons(line2));
+    CHECK(!cons(line3));
+}
+
+TEST_CASE("Equals-avx2", "") {
+    const std::string pattern("My first line!");
+    const std::string line1("This is the first line!");
+    const std::string line2("Thisn't the first line!");
+    const std::string line3("My first line!");
+    const char *foo = NULL;
+    utils::baseline::Equals cons(pattern);
+    CHECK(!cons(line1));
+    CHECK(!cons(line2));
+    CHECK(cons(line3));
+}
