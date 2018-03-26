@@ -2,7 +2,6 @@
 
 #include "string.hpp"
 #include <cstring>
-#include <string.hpp>
 #include <string>
 
 namespace utils {

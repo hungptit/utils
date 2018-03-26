@@ -4,7 +4,7 @@
 
 namespace utils {
     template <typename OArchive, typename T>
-    void data_dumper(T && data, const std::string &msg) {
+    void data_dumper(T &&data, const std::string &msg) {
         std::stringstream ss;
         {
             OArchive oarchive(ss);
