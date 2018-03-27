@@ -85,7 +85,7 @@ include_directories ("${ROOT_DIR}/src")
 SET(LIB_BENCHMARK "${EXTERNAL_DIR}/lib/libbenchmark.a")
 set(LIB_CELERO "${EXTERNAL_DIR}/lib/libcelero.a")
 
-set(COMMAND_SRC_FILES string)
+set(COMMAND_SRC_FILES string timeutils)
 foreach (src_file ${COMMAND_SRC_FILES})
   ADD_EXECUTABLE(${src_file} ${src_file}.cpp)
   TARGET_LINK_LIBRARIES(${src_file} -lpthread -lm ${LIB_BENCHMARK})

@@ -25,9 +25,9 @@ TEST_CASE("Parsing digits", "Positive") {
 	std::string two("12");
 	std::string three("345");
 	std::string four("1234");
-	REQUIRE(std::atoi(two.c_str()) == (utils::timestamp::parse_digits<2>(two.data(), 0)));
-	REQUIRE(std::atoi(three.c_str()) == (utils::timestamp::parse_digits<3>(three.data(), 0)));
-	REQUIRE(std::atoi(four.c_str()) == (utils::timestamp::parse_digits<4>(four.data(), 0)));
+	REQUIRE(std::atoi(two.c_str()) == (utils::parse_digits<2>(two.data(), 0)));
+	REQUIRE(std::atoi(three.c_str()) == (utils::parse_digits<3>(three.data(), 0)));
+	REQUIRE(std::atoi(four.c_str()) == (utils::parse_digits<4>(four.data(), 0)));
 }
 
 TEST_CASE("Parse timestamp", "scribe timestamp") {
@@ -41,6 +41,18 @@ TEST_CASE("Parse timestamp", "scribe timestamp") {
     fmt::print("{0} --> {1}\n", timestamp, printer.buffer);
 	CHECK_THAT(printer.buffer, Equals("2018-02-04 23:42:22"));
 }
+
+TEST_CASE("Very fast timestamp parser", "scribe") {
+	std::string timestamp("02/04/2018 23:42:22");
+	utils::timestamp::scribe parser;
+	auto t = utils::parse_timestamp(timestamp.data());
+	fmt::print("sizeof(t): {}\n", sizeof(t));
+	fmt::print("Parsed data: {0}-{1}-{2} {3}:{4}:{5}\n", t.month, t.day, t.year, t.hour, t.min, t.sec);
+	// Print out the parsed results
+    // fmt::print("{0} --> {1}\n", timestamp, printer.buffer);
+	// CHECK_THAT(printer.buffer, Equals("2018-02-04 23:42:22"));
+}
+
 
 TEST_CASE("Comparators", "timestamp") {
 	std::string timestamp1("01/04/2018 13:42:22");

@@ -1,25 +1,35 @@
 #include <benchmark/benchmark.h>
-#include "utils/matchers.hpp"
+#include "matchers.hpp"
+#include "timeutils.hpp"
 
-std::vector<std::string> timestamps = {"2018-03-23 10:12:10"};
+char timestamp[] = "02-03-2018 10:12:10";
 
 // Basic implementation.
 void strftime(benchmark::State &state) {
-	utils::baseline::Contains contains(pattern);
+	struct tm tm;
     for (auto _ : state) {
-		benchmark::DoNotOptimize(contains(data));
+		strptime(timestamp, "%m-%d-%Y %H:%M:%S", &tm);
+		benchmark::DoNotOptimize(mktime(&tm));
 	}
 }
 // Register the function as a benchmark
 BENCHMARK(strftime);
 
 void customized_parser(benchmark::State &state) {
-	utils::sse2::Contains contains(pattern);
+	utils::timestamp::scribe parser;
     for (auto _ : state) {
-		benchmark::DoNotOptimize(contains(data));
+		benchmark::DoNotOptimize(parser(timestamp));
 	}
 }
 // Register the function as a benchmark
 BENCHMARK(customized_parser);
+
+void fast_parser(benchmark::State &state) {
+    for (auto _ : state) {
+		benchmark::DoNotOptimize(utils::parse_timestamp(timestamp));
+	}
+}
+// Register the function as a benchmark
+BENCHMARK(fast_parser);
 
 BENCHMARK_MAIN();

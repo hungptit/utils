@@ -4,23 +4,61 @@
 #include <string>
 
 namespace utils {
-    // A simple parser for timestamp.
-    namespace timestamp {
+    namespace {
         static constexpr char ZERO = '0';
         static constexpr int SHIFT_2 = ZERO * 11;
         static constexpr int SHIFT_4 = ZERO * 1111;
         static constexpr int SHIFT_YEAR = 1900;
         static constexpr int SHIFT_MONTH = 1;
+    }
 
-        template <unsigned int N> int parse_digits(const char *ptr, const int initval) {
-            const int val = initval * 10 + ptr[0] - ZERO;
-            return parse_digits<N - 1>(++ptr, val);
-        }
+    template <unsigned int N> int parse_digits(const char *ptr, const int initval) {
+        const int val = initval * 10 + ptr[0] - ZERO;
+        return parse_digits<N - 1>(++ptr, val);
+    }
 
-        template <> int parse_digits<1>(const char *ptr, const int initval) {
-            return initval * 10 + ptr[0] - ZERO;
-        }
+    template <> int parse_digits<1>(const char *ptr, const int initval) {
+        return initval * 10 + ptr[0] - ZERO;
+    }
 
+	// A simple data structure to hold time information.
+    struct Timestamp {
+        unsigned short year;
+        unsigned char month;
+        unsigned char day;
+        unsigned char hour;
+        unsigned char min;
+        unsigned char sec;
+		unsigned char reserved;
+    };
+
+	// TODO: We need to have comparators and hash functor for Timestamp.
+	
+    Timestamp parse_timestamp(const char *timestr) {
+        const char *ptr = timestr;
+        Timestamp tm;
+        tm.month = parse_digits<2>(ptr, 0);
+        ptr += 3;
+
+        tm.day = parse_digits<2>(ptr, 0);
+        ptr += 3;
+
+        tm.year = parse_digits<4>(ptr, 0);
+
+        ptr += 5;
+        tm.hour = parse_digits<2>(ptr, 0);
+
+        ptr += 3;
+        tm.min = parse_digits<2>(ptr, 0);
+
+        ptr += 3;
+        tm.sec = parse_digits<2>(ptr, 0);
+
+        return tm;
+    }
+
+    // A simple parser for timestamp.
+    namespace timestamp {
         int parse_two_digits(const char *begin) {
             const char *ptr = begin;
             return ptr[0] * 10 + ptr[1] - SHIFT_2;
@@ -60,6 +98,33 @@ namespace utils {
             struct tm tm;
         };
 
+        struct scribe_simple {
+            std::time_t operator()(const char *p) {
+                const char *ptr = p;
+
+                tm.tm_mon = parse_digits<2>(ptr, 0) - SHIFT_MONTH;
+                ptr += 3;
+
+                tm.tm_mday = parse_digits<2>(ptr, 0);
+                ptr += 3;
+
+                tm.tm_year = parse_digits<4>(ptr, 0) - SHIFT_YEAR;
+
+                ptr += 5;
+                tm.tm_hour = parse_digits<2>(ptr, 0);
+
+                ptr += 3;
+                tm.tm_min = parse_digits<2>(ptr, 0);
+
+                ptr += 3;
+                tm.tm_sec = parse_digits<2>(ptr, 0);
+
+                tm.tm_isdst = 0; // Do not care about day light saving.
+                return mktime(&tm);
+            }
+            struct tm tm;
+        };
+
         struct rabbitmq {};
 
         struct AllTimestamps {
@@ -73,31 +138,25 @@ namespace utils {
         };
 
         struct NewerThan {
-			explicit NewerThan(const std::time_t t) : timestamp(t){}
-			bool operator()(const std::time_t t) {
-				return t < timestamp;
-			}
-			const std::time_t timestamp;
-		};
+            explicit NewerThan(const std::time_t t) : timestamp(t) {}
+            bool operator()(const std::time_t t) { return t < timestamp; }
+            const std::time_t timestamp;
+        };
 
         struct Equals {
-			explicit Equals(const std::time_t t) : timestamp(t){}
-			bool operator()(const std::time_t t) {
-				return t == timestamp;
-			}
-			const std::time_t timestamp;
-		};
+            explicit Equals(const std::time_t t) : timestamp(t) {}
+            bool operator()(const std::time_t t) { return t == timestamp; }
+            const std::time_t timestamp;
+        };
 
         struct Between {
-			Between(const std::time_t b, const std::time_t e) : begin(b), end(e){}
+            Between(const std::time_t b, const std::time_t e) : begin(b), end(e) {}
 
-			bool operator()(const std::time_t t) {
-				return (t > begin) && (t < end);
-			}
-			
-			const std::time_t begin;
-			const std::time_t end;
-		};
+            bool operator()(const std::time_t t) { return (t > begin) && (t < end); }
+
+            const std::time_t begin;
+            const std::time_t end;
+        };
     }
 
     class TimeParser {
