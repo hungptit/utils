@@ -85,7 +85,7 @@ namespace utils {
           private:
             const std::string pattern;
         };
-    }                 // namespace sse2
+    } // namespace sse2
     namespace avx2 {
         // Check that a searched string starts with a given pattern.
         class StartsWith {
@@ -122,6 +122,6 @@ namespace utils {
           private:
             const std::string pattern;
         };
-	} // namespace avx2
+    } // namespace avx2
 
 } // namespace utils
