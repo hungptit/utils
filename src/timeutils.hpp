@@ -21,112 +21,68 @@ namespace utils {
         return initval * 10 + ptr[0] - ZERO;
     }
 
-	// A simple data structure to hold time information.
+    // A simple data structure to hold time information. This data structure
+    // must be similar to struct tm so that we can reuse our parsing code.
     struct Timestamp {
-        unsigned short year;
-        unsigned char month;
-        unsigned char day;
-        unsigned char hour;
-        unsigned char min;
-        unsigned char sec;
-		unsigned char reserved;
+        unsigned char tm_sec;
+        unsigned char tm_min;
+        unsigned char tm_hour;
+        unsigned char tm_mday;
+        unsigned char tm_mon;
+        unsigned short tm_year;
+        unsigned char tm_isdst;
     };
 
-	// TODO: We need to have comparators and hash functor for Timestamp.
-	
-    Timestamp parse_timestamp(const char *timestr) {
-        const char *ptr = timestr;
-        Timestamp tm;
-        tm.month = parse_digits<2>(ptr, 0);
-        ptr += 3;
-
-        tm.day = parse_digits<2>(ptr, 0);
-        ptr += 3;
-
-        tm.year = parse_digits<4>(ptr, 0);
-
-        ptr += 5;
-        tm.hour = parse_digits<2>(ptr, 0);
-
-        ptr += 3;
-        tm.min = parse_digits<2>(ptr, 0);
-
-        ptr += 3;
-        tm.sec = parse_digits<2>(ptr, 0);
-
+    // TODO: We need to have comparators and hash functor for Timestamp.
+    template <typename T> T parse_timestamp(const char *ptr) {
+        T tm;
+        tm.tm_mon = parse_digits<2>(ptr, 0);
+        tm.tm_mday = parse_digits<2>(ptr + 3, 0);
+        tm.tm_year = parse_digits<4>(ptr + 6, 0);
+        tm.tm_hour = parse_digits<2>(ptr + 11, 0);
+        tm.tm_min = parse_digits<2>(ptr + 14, 0);
+        tm.tm_sec = parse_digits<2>(ptr + 17, 0);
+        tm.tm_isdst = 0; // Do not care about day light saving.
         return tm;
     }
 
     // A simple parser for timestamp.
     namespace timestamp {
-        int parse_two_digits(const char *begin) {
-            const char *ptr = begin;
-            return ptr[0] * 10 + ptr[1] - SHIFT_2;
-        }
-
-        int parse_four_digits(const char *begin) {
-            const char *ptr = begin;
-            return ptr[0] * 1000 + ptr[1] * 100 + ptr[2] * 10 + ptr[3] - SHIFT_4;
-        }
-
         // Scribe log message has this format "02/04/2018 23:42:22".
         // This parse doesn't validate seperator characters.
         struct scribe {
-            std::time_t operator()(const char *p) {
-                const char *ptr = p;
-
+            using value_type = struct tm;
+            auto operator()(const char *ptr) {
                 tm.tm_mon = parse_digits<2>(ptr, 0) - SHIFT_MONTH;
-                ptr += 3;
-
-                tm.tm_mday = parse_digits<2>(ptr, 0);
-                ptr += 3;
-
-                tm.tm_year = parse_digits<4>(ptr, 0) - SHIFT_YEAR;
-
-                ptr += 5;
-                tm.tm_hour = parse_digits<2>(ptr, 0);
-
-                ptr += 3;
-                tm.tm_min = parse_digits<2>(ptr, 0);
-
-                ptr += 3;
-                tm.tm_sec = parse_digits<2>(ptr, 0);
-
+                tm.tm_mday = parse_digits<2>(ptr + 3, 0);
+                tm.tm_year = parse_digits<4>(ptr + 6, 0) - SHIFT_YEAR;
+                tm.tm_hour = parse_digits<2>(ptr + 11, 0);
+                tm.tm_min = parse_digits<2>(ptr + 14, 0);
+                tm.tm_sec = parse_digits<2>(ptr + 17, 0);
                 tm.tm_isdst = 0; // Do not care about day light saving.
                 return mktime(&tm);
             }
-            struct tm tm;
+            value_type tm;
         };
 
         struct scribe_simple {
-            std::time_t operator()(const char *p) {
-                const char *ptr = p;
-
+            using value_type = struct tm;
+            auto operator()(const char *ptr) {
                 tm.tm_mon = parse_digits<2>(ptr, 0) - SHIFT_MONTH;
-                ptr += 3;
-
-                tm.tm_mday = parse_digits<2>(ptr, 0);
-                ptr += 3;
-
-                tm.tm_year = parse_digits<4>(ptr, 0) - SHIFT_YEAR;
-
-                ptr += 5;
-                tm.tm_hour = parse_digits<2>(ptr, 0);
-
-                ptr += 3;
-                tm.tm_min = parse_digits<2>(ptr, 0);
-
-                ptr += 3;
-                tm.tm_sec = parse_digits<2>(ptr, 0);
-
+                tm.tm_mday = parse_digits<2>(ptr + 3, 0);
+                tm.tm_year = parse_digits<4>(ptr + 6, 0) - SHIFT_YEAR;
+                tm.tm_hour = parse_digits<2>(ptr + 11, 0);
+                tm.tm_min = parse_digits<2>(ptr + 14, 0);
+                tm.tm_sec = parse_digits<2>(ptr + 17, 0);
                 tm.tm_isdst = 0; // Do not care about day light saving.
-                return mktime(&tm);
+                return std::ref(tm);
             }
-            struct tm tm;
+            value_type tm;
         };
 
         struct rabbitmq {};
 
+        // TODO: Convert these structs into template so we can reuse logics.
         struct AllTimestamps {
             bool operator()(const std::time_t t) { return true; }
         };
