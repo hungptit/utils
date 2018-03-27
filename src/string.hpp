@@ -340,7 +340,7 @@ namespace utils {
                 // curr = [a, b] (2 x 128 bit)
                 // next = [c, d]
                 // substring = [palignr(b, a, i), palignr(c, b, i)]
-                __m256i next1;
+                __m256i next1 = {};
                 next1 = _mm256_inserti128_si256(next1, _mm256_extracti128_si256(curr, 1),
                                                 0); // b
                 next1 = _mm256_inserti128_si256(next1, _mm256_extracti128_si256(next, 0),

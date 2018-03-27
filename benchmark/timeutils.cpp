@@ -4,7 +4,7 @@
 
 char timestamp[] = "02-03-2018 10:12:10";
 
-// Basic implementation.
+// Basic implementation using strptime.
 void strftime(benchmark::State &state) {
 	struct tm tm;
     for (auto _ : state) {
@@ -12,24 +12,32 @@ void strftime(benchmark::State &state) {
 		benchmark::DoNotOptimize(mktime(&tm));
 	}
 }
-// Register the function as a benchmark
 BENCHMARK(strftime);
 
+// Customized parser
 void customized_parser(benchmark::State &state) {
 	utils::timestamp::scribe parser;
     for (auto _ : state) {
 		benchmark::DoNotOptimize(parser(timestamp));
 	}
 }
-// Register the function as a benchmark
 BENCHMARK(customized_parser);
 
-void fast_parser(benchmark::State &state) {
+// Simple parser
+void simple_parser(benchmark::State &state) {
+	utils::timestamp::scribe_simple parser;
     for (auto _ : state) {
-		benchmark::DoNotOptimize(utils::parse_timestamp(timestamp));
+		benchmark::DoNotOptimize(parser(timestamp));
 	}
 }
-// Register the function as a benchmark
+BENCHMARK(simple_parser);
+
+// Very fast time parser
+void fast_parser(benchmark::State &state) {
+    for (auto _ : state) {
+		benchmark::DoNotOptimize(utils::parse_timestamp<utils::Timestamp>(timestamp));
+	}
+}
 BENCHMARK(fast_parser);
 
 BENCHMARK_MAIN();
