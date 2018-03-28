@@ -2,6 +2,7 @@
 
 #include <ctime>
 #include <string>
+#include <functional>
 
 namespace utils {
     namespace {
