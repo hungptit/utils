@@ -33,6 +33,11 @@ namespace utils {
             return buffer;
         }
 
+        const char *operator()(const struct tm timestamp) {
+            strftime(buffer, buffer_size, format.c_str(), &timestamp);
+            return buffer;
+        }
+
         std::string format;
         static constexpr size_t buffer_size = 255;
         char buffer[buffer_size];

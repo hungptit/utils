@@ -3,6 +3,8 @@
 
 #include "timer.hpp"
 #include "timeutils.hpp"
+#include "timestamp.hpp"
+#include "timestamp_experiments.hpp"
 #include <time.h>
 
 #define CATCH_CONFIG_MAIN
@@ -32,7 +34,7 @@ TEST_CASE("Parsing digits", "Positive") {
 
 TEST_CASE("Parse timestamp", "scribe timestamp") {
     std::string timestamp("02/04/2018 23:42:22");
-    utils::timestamp::scribe parser;
+    utils::experiments::scribe parser;
     std::time_t t = parser(timestamp.data());
 
     // Print out the parsed results
@@ -44,7 +46,7 @@ TEST_CASE("Parse timestamp", "scribe timestamp") {
 
 TEST_CASE("Very fast timestamp parser", "scribe") {
     std::string timestamp("02/04/2018 23:42:22");
-    utils::timestamp::scribe parser;
+    utils::experiments::scribe parser;
     auto t = utils::parse_timestamp<utils::Timestamp>(timestamp.data());
     fmt::print("sizeof(t): {}\n", sizeof(t));
     fmt::print("Parsed data: {0}-{1}-{2} {3}:{4}:{5}\n", t.tm_mon, t.tm_mday, t.tm_year,
@@ -58,7 +60,7 @@ TEST_CASE("Comparators", "timestamp") {
     std::string timestamp1("01/04/2018 13:42:22");
     std::string timestamp2("02/04/2018 23:00:22");
     std::string timestamp3("02/04/2018 15:31:00");
-    utils::timestamp::scribe parser;
+    utils::experiments::scribe parser;
     std::time_t t1 = parser(timestamp1.data());
     std::time_t t2 = parser(timestamp2.data());
     std::time_t t3 = parser(timestamp3.data());
@@ -79,11 +81,11 @@ TEST_CASE("Comparators", "timestamp") {
     CHECK_THAT(printer.buffer, Equals("2018-02-04 15:31:00"));
 
     // Check all time constraints.
-    utils::timestamp::AllTimestamps all;
-    utils::timestamp::OlderThan older_than(t3);
-    utils::timestamp::NewerThan newer_than(t3);
-    utils::timestamp::Between between(t1, t2);
-    utils::timestamp::Equals equals(t3);
+    utils::AllTimestamps<std::time_t> all;
+    utils::OlderThan<std::time_t> older_than(t3);
+    utils::NewerThan<std::time_t> newer_than(t3);
+    utils::Between<std::time_t> between(t1, t2);
+    utils::Equals<std::time_t> equals(t3);
     CHECK(all(t1));
 
     CHECK(!older_than(t1));
