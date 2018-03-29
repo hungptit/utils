@@ -4,13 +4,11 @@
 #include <tuple>
 
 namespace utils {
-    namespace {
-        static constexpr char ZERO = '0';
-        static constexpr int SHIFT_2 = ZERO * 11;
-        static constexpr int SHIFT_4 = ZERO * 1111;
-        static constexpr int SHIFT_YEAR = 1900;
-        static constexpr int SHIFT_MONTH = 1;
-    }
+    static constexpr char ZERO = '0';
+    static constexpr int SHIFT_2 = ZERO * 11;
+    static constexpr int SHIFT_4 = ZERO * 1111;
+    static constexpr int SHIFT_YEAR = 1900;
+    static constexpr int SHIFT_MONTH = 1;
 
     template <unsigned int N> int parse_digits(const char *ptr, const int initval) {
         const int val = initval * 10 + ptr[0] - ZERO;
@@ -55,6 +53,9 @@ namespace utils {
         unsigned short tm_year;
         unsigned char tm_isdst;
     };
+
+    static const Timestamp MAX_TIME(1, 1, 1900, 0, 0, 0);
+    static const Timestamp MIN_TIME(1, 1, 2100, 0, 0, 0);
 
     bool operator==(const Timestamp t1, const Timestamp t2) {
         return std::tie(t1.tm_sec, t1.tm_min, t1.tm_hour, t1.tm_mday, t1.tm_mon, t1.tm_year) ==
