@@ -23,13 +23,14 @@ namespace utils {
     // must be similar to struct tm so that we can reuse our parsing code.
     struct Timestamp {
         explicit Timestamp() noexcept
-            : tm_sec(0), tm_min(0), tm_hour(0), tm_mday(1), tm_mon(SHIFT_MONTH),
-              tm_year(SHIFT_YEAR), tm_isdst(0) {}
+            : tm_year(SHIFT_YEAR), tm_mon(SHIFT_MONTH), tm_mday(1), tm_hour(0), tm_min(0),
+              tm_sec(0), tm_isdst(0) {}
         explicit Timestamp(const unsigned char mon, const unsigned char day,
                            const unsigned short year, const unsigned char hour,
                            const unsigned char minute, const unsigned char second) noexcept
-            : tm_sec(second), tm_min(minute), tm_hour(hour), tm_mday(day), tm_mon(mon),
-              tm_year(year), tm_isdst(0) {}
+            : tm_year(year), tm_mon(mon), tm_mday(day), tm_hour(hour), tm_min(minute),
+              tm_sec(second), tm_isdst(0) {}
+        explicit Timestamp(const Timestamp &t) : tm_year(t.tm_year), tm_mon(t.tm_mon){}
 
         // Convert to the tm struct. This is very useful when we want to print out the
         // timestamp.
@@ -45,17 +46,17 @@ namespace utils {
             return tm;
         }
 
-        unsigned char tm_sec;
-        unsigned char tm_min;
-        unsigned char tm_hour;
-        unsigned char tm_mday;
-        unsigned char tm_mon;
         unsigned short tm_year;
+        unsigned char tm_mon;
+        unsigned char tm_mday;
+        unsigned char tm_hour;
+        unsigned char tm_min;
+        unsigned char tm_sec;
         unsigned char tm_isdst;
     };
 
-    static const Timestamp MAX_TIME(1, 1, 1900, 0, 0, 0);
-    static const Timestamp MIN_TIME(1, 1, 2100, 0, 0, 0);
+    static const Timestamp MIN_TIME(1, 1, 1900, 0, 0, 0);
+    static const Timestamp MAX_TIME(1, 1, 2100, 0, 0, 0);
 
     bool operator==(const Timestamp t1, const Timestamp t2) {
         return std::tie(t1.tm_sec, t1.tm_min, t1.tm_hour, t1.tm_mday, t1.tm_mon, t1.tm_year) ==
@@ -69,6 +70,11 @@ namespace utils {
 
     bool operator<(const Timestamp t1, const Timestamp t2) {
         return std::tie(t1.tm_year, t1.tm_mon, t1.tm_mday, t1.tm_hour, t1.tm_min, t1.tm_sec) <
+               std::tie(t2.tm_year, t2.tm_mon, t2.tm_mday, t2.tm_hour, t2.tm_min, t2.tm_sec);
+    }
+
+    bool operator!=(const Timestamp t1, const Timestamp t2) {
+        return std::tie(t1.tm_year, t1.tm_mon, t1.tm_mday, t1.tm_hour, t1.tm_min, t1.tm_sec) !=
                std::tie(t2.tm_year, t2.tm_mon, t2.tm_mday, t2.tm_hour, t2.tm_min, t2.tm_sec);
     }
 

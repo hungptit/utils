@@ -1,3 +1,4 @@
+#pragma once
 /*
     The following templates implement the loop, where K is a template parameter.
 

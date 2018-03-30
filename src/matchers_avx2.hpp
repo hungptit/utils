@@ -1,4 +1,4 @@
-
+#pragma once
 #include "system.hpp"
 #include "string_avx2.hpp"
 

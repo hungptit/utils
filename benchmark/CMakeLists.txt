@@ -27,7 +27,8 @@ include(AddCXXCompilerFlag)
 include(CXXFeatureCheck)
 
 # Use libc++  provided by llvm
-# set(CMAKE_CXX_COMPILER "clang++")
+set(CMAKE_CXX_COMPILER "clang++")
+# set(CMAKE_CXX_COMPILER "g++-7")
 # add_cxx_compiler_flag(-stdlib=libc++)
 
 # set(CMAKE_BUILD_TYPE Debug)
@@ -54,9 +55,9 @@ add_cxx_compiler_flag(-flto)
 # add_cxx_compiler_flag(-Wfloat-equal)
 # add_cxx_compiler_flag(-Wint-to-void-pointer-cast)
 
-add_cxx_compiler_flag(-Wshorten-64-to-32)
+# add_cxx_compiler_flag(-Wshorten-64-to-32)
 # add_cxx_compiler_flag(-Wfloat-equal)
-add_cxx_compiler_flag(-Wint-to-void-pointer-cast)
+# add_cxx_compiler_flag(-Wint-to-void-pointer-cast)
 
 add_cxx_compiler_flag(-fstrict-aliasing)
 if (HAVE_CXX_FLAG_FSTRICT_ALIASING)
@@ -83,8 +84,6 @@ include_directories ("${ROOT_DIR}/src")
 
 # Used libraries
 SET(LIB_BENCHMARK "${EXTERNAL_DIR}/lib/libbenchmark.a")
-set(LIB_CELERO "${EXTERNAL_DIR}/lib/libcelero.a")
-
 set(COMMAND_SRC_FILES string timeutils)
 foreach (src_file ${COMMAND_SRC_FILES})
   ADD_EXECUTABLE(${src_file} ${src_file}.cpp)
