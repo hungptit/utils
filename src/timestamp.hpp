@@ -25,12 +25,17 @@ namespace utils {
         explicit Timestamp() noexcept
             : tm_year(SHIFT_YEAR), tm_mon(SHIFT_MONTH), tm_mday(1), tm_hour(0), tm_min(0),
               tm_sec(0), tm_isdst(0) {}
+
         explicit Timestamp(const unsigned char mon, const unsigned char day,
                            const unsigned short year, const unsigned char hour,
                            const unsigned char minute, const unsigned char second) noexcept
             : tm_year(year), tm_mon(mon), tm_mday(day), tm_hour(hour), tm_min(minute),
               tm_sec(second), tm_isdst(0) {}
-        explicit Timestamp(const Timestamp &t) : tm_year(t.tm_year), tm_mon(t.tm_mon){}
+
+		template<typename T>
+        Timestamp(T &&t)
+            : tm_year(t.tm_year), tm_mon(t.tm_mon), tm_mday(t.tm_mday), tm_hour(t.tm_hour),
+              tm_min(t.tm_min), tm_sec(t.tm_sec), tm_isdst(t.tm_isdst) {}
 
         // Convert to the tm struct. This is very useful when we want to print out the
         // timestamp.
@@ -119,4 +124,4 @@ namespace utils {
         const T begin;
         const T end;
     };
-}
+} // namespace utils
