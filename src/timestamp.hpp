@@ -63,6 +63,8 @@ namespace utils {
     static const Timestamp MIN_TIME(1, 1, 1900, 0, 0, 0);
     static const Timestamp MAX_TIME(1, 1, 2100, 0, 0, 0);
 
+
+	// TODO: Speedup below comparators using SSE2/AVX2
     bool operator==(const Timestamp t1, const Timestamp t2) {
         return std::tie(t1.tm_sec, t1.tm_min, t1.tm_hour, t1.tm_mday, t1.tm_mon, t1.tm_year) ==
                std::tie(t2.tm_sec, t2.tm_min, t2.tm_hour, t2.tm_mday, t2.tm_mon, t2.tm_year);
