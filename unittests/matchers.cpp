@@ -179,14 +179,16 @@ TEST_CASE("utils::Timestamp", "") {
 TEST_CASE("Regular expression matcher", "utils::RegexMatcher") {
     std::string line1("This is my first line");
     std::string line2("This is my second line");
+    std::string line3("");
 
     SECTION("Simple test") {
         utils::hyperscan::RegexMatcher matcher("my.*line");
         CHECK(matcher(line1));
         CHECK(matcher(line2));
+        CHECK(!matcher(line3));
     }
 
-	SECTION("Negative tests") {
+    SECTION("Negative tests") {
         utils::hyperscan::RegexMatcher matcher("foo");
         CHECK(!matcher(line1));
         CHECK(!matcher(line2));
