@@ -13,6 +13,7 @@ namespace utils {
                 return HS_SCAN_TERMINATED;
             }
         } // namespace
+
         class RegexMatcher {
           public:
             explicit RegexMatcher(const std::string &patt) {
@@ -37,7 +38,7 @@ namespace utils {
             }
 
             bool operator()(const std::string &data) {
-				if (data.empty()) return false;
+                if (data.empty()) return false;
                 char *ptr = const_cast<char *>(pattern.c_str());
                 auto errcode =
                     hs_scan(database, data.data(), data.size(), 0, scratch, event_handler, ptr);
