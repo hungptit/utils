@@ -1,11 +1,11 @@
 #include "matchers.hpp"
 #include "fmt/format.h"
-#include "timeutils.hpp"
+#include "regex_matchers.hpp"
 #include "timestamp.hpp"
+#include "timeutils.hpp"
 #include <cstring>
 #include <string>
 #include <time.h>
-#include "timeutils.hpp"
 
 #define CATCH_CONFIG_MAIN
 #include "catch/catch.hpp"
@@ -120,58 +120,75 @@ TEST_CASE("Equals-avx2", "") {
 }
 
 TEST_CASE("utils::Timestamp", "") {
-	using value_type = utils::Timestamp;
-	value_type tm;
-	utils::TimePrinter printer("%m-%d-%Y %H:%M:%S");
-	value_type t1(1, 3, 2018, 10, 10, 9);
-	value_type t2(2, 3, 2018, 5, 21, 49);
-	value_type t3(2, 5, 2018, 0, 1, 3);
-	value_type t4;
-	
-	printer(t1.to_tm());
-	fmt::print("t1: {}\n", printer.buffer);
+    using value_type = utils::Timestamp;
+    value_type tm;
+    utils::TimePrinter printer("%m-%d-%Y %H:%M:%S");
+    value_type t1(1, 3, 2018, 10, 10, 9);
+    value_type t2(2, 3, 2018, 5, 21, 49);
+    value_type t3(2, 5, 2018, 0, 1, 3);
+    value_type t4;
 
-	printer(t2.to_tm());
-	fmt::print("t2: {}\n", printer.buffer);
+    printer(t1.to_tm());
+    fmt::print("t1: {}\n", printer.buffer);
 
-	printer(t3.to_tm());
-	fmt::print("t3: {}\n", printer.buffer);
-	
-	printer(t3.to_tm());
-	CHECK_THAT(printer.buffer, Equals("02-05-2018 00:01:03"));
-	fmt::print("t3: {}\n", printer.buffer);
+    printer(t2.to_tm());
+    fmt::print("t2: {}\n", printer.buffer);
 
-	printer(t4.to_tm());
-	CHECK_THAT(printer.buffer, Equals("01-01-1900 00:00:00"));
-	
-	SECTION ("AllTimestamps matcher") {
-		utils::AllTimestamps<value_type> cons;
-		CHECK(cons(tm));
-	}
+    printer(t3.to_tm());
+    fmt::print("t3: {}\n", printer.buffer);
 
-	SECTION ("OlderThan matcher") {
-		utils::OlderThan<value_type> t2_is_older_than(t2);
-		CHECK(!t2_is_older_than(t1));
-		CHECK(t2_is_older_than(t3));
-	}
+    printer(t3.to_tm());
+    CHECK_THAT(printer.buffer, Equals("02-05-2018 00:01:03"));
+    fmt::print("t3: {}\n", printer.buffer);
 
-	SECTION ("NewerThan matcher") {
-		utils::NewerThan<value_type> t2_is_newer_than(t2);
-		CHECK(t2_is_newer_than(t1));
-		CHECK(!t2_is_newer_than(t3));
-	}
+    printer(t4.to_tm());
+    CHECK_THAT(printer.buffer, Equals("01-01-1900 00:00:00"));
 
-	SECTION ("Equals matcher") {
-		utils::Equals<value_type> constraint(t2);
-		CHECK(!constraint(t1));
-		CHECK(constraint(t2));
-		CHECK(!constraint(t3));
-	}
+    SECTION("AllTimestamps matcher") {
+        utils::AllTimestamps<value_type> cons;
+        CHECK(cons(tm));
+    }
 
-	SECTION ("Between matcher") {
-		utils::Between<value_type> constraint(t1, t3);
-		CHECK(!constraint(t1));
-		CHECK(constraint(t2));
-		CHECK(!constraint(t3));
-	}
+    SECTION("OlderThan matcher") {
+        utils::OlderThan<value_type> t2_is_older_than(t2);
+        CHECK(!t2_is_older_than(t1));
+        CHECK(t2_is_older_than(t3));
+    }
+
+    SECTION("NewerThan matcher") {
+        utils::NewerThan<value_type> t2_is_newer_than(t2);
+        CHECK(t2_is_newer_than(t1));
+        CHECK(!t2_is_newer_than(t3));
+    }
+
+    SECTION("Equals matcher") {
+        utils::Equals<value_type> constraint(t2);
+        CHECK(!constraint(t1));
+        CHECK(constraint(t2));
+        CHECK(!constraint(t3));
+    }
+
+    SECTION("Between matcher") {
+        utils::Between<value_type> constraint(t1, t3);
+        CHECK(!constraint(t1));
+        CHECK(constraint(t2));
+        CHECK(!constraint(t3));
+    }
+}
+
+TEST_CASE("Regular expression matcher", "utils::RegexMatcher") {
+    std::string line1("This is my first line");
+    std::string line2("This is my second line");
+
+    SECTION("Simple test") {
+        utils::hyperscan::RegexMatcher matcher("my.*line");
+        CHECK(matcher(line1));
+        CHECK(matcher(line2));
+    }
+
+	SECTION("Negative tests") {
+        utils::hyperscan::RegexMatcher matcher("foo");
+        CHECK(!matcher(line1));
+        CHECK(!matcher(line2));
+    }
 }

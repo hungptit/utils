@@ -75,6 +75,10 @@ add_cxx_compiler_flag(-flto)
 ENABLE_TESTING()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Used libraries
+SET(LIB_HS "${EXTERNAL_DIR}/lib64/libhs.a")
+SET(LIB_HS_RUNTIME "${EXTERNAL_DIR}/lib64/libhs_runtime.a")
+
 # Include other headers such as fmt library.
 include_directories ("${EXTERNAL_DIR}/include")
 
@@ -84,6 +88,6 @@ include_directories ("${ROOT_DIR}/src")
 set(COMMAND_SRC_FILES timeutils matchers string)
 foreach (src_file ${COMMAND_SRC_FILES})
   ADD_EXECUTABLE(${src_file} ${src_file}.cpp)
-  TARGET_LINK_LIBRARIES(${src_file} -lpthread -lm)
+  TARGET_LINK_LIBRARIES(${src_file} ${LIB_HS} ${LIB_HS_RUNTIME} -lpthread -lm)
   ADD_TEST(${src_file} ./${src_file})
 endforeach (src_file)
