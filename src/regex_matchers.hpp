@@ -21,7 +21,7 @@ namespace utils {
                 if (hs_compile(pattern.c_str(), HS_FLAG_DOTALL, HS_MODE_BLOCK, NULL, &database,
                                &compile_err) != HS_SUCCESS) {
                     fmt::MemoryWriter writer;
-                    writer << "ERROR: Unable to compile pattern \"" << pattern
+                    writer << "Unable to compile pattern \"" << pattern
                            << "\": " << compile_err->message;
                     throw std::runtime_error(writer.str());
                 }
