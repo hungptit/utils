@@ -1,6 +1,5 @@
 #include "memchr.hpp"
 #include <cstring>
-
 #include <benchmark/benchmark.h>
 
 const std::string
@@ -10,57 +9,32 @@ const std::string
 const char ch1('2');
 const char ch2('W');
 
-// memchr
+// memchr short
 void memchr_short(benchmark::State &state) {
-    for (auto _ : state) {
-		benchmark::DoNotOptimize(memchr(data.data(), ch1, data.size()));
-	}
+    for (auto _ : state) { benchmark::DoNotOptimize(memchr(data.data(), ch1, data.size())); }
 }
-// Register the function as a benchmark
 BENCHMARK(memchr_short);
 
+// memchr long
 void memchr_long(benchmark::State &state) {
-    for (auto _ : state) {
-		benchmark::DoNotOptimize(memchr(data.data(), ch2, data.size()));
-	}
+    for (auto _ : state) { benchmark::DoNotOptimize(memchr(data.data(), ch2, data.size())); }
 }
-// Register the function as a benchmark
 BENCHMARK(memchr_long);
 
-// memchr
+// memchr_avx2 short
 void memchr_avx2_short(benchmark::State &state) {
     for (auto _ : state) {
-		benchmark::DoNotOptimize(memchr_avx2(data.data(), ch1, data.size()));
-	}
+        benchmark::DoNotOptimize(memchr_avx2(data.data(), ch1, data.size()));
+    }
 }
-// Register the function as a benchmark
 BENCHMARK(memchr_avx2_short);
-
 
 // memchr
 void memchr_avx2_long(benchmark::State &state) {
     for (auto _ : state) {
-		benchmark::DoNotOptimize(memchr_avx2(data.data(), ch2, data.size()));
-	}
+        benchmark::DoNotOptimize(memchr_avx2(data.data(), ch2, data.size()));
+    }
 }
-// Register the function as a benchmark
 BENCHMARK(memchr_avx2_long);
-
-void memchr_avx2_short_tue(benchmark::State &state) {
-    for (auto _ : state) {
-		benchmark::DoNotOptimize(memchr_avx2_tue(data.data(), ch1, data.size()));
-	}
-}
-// Register the function as a benchmark
-BENCHMARK(memchr_avx2_short_tue);
-
-
-void memchr_avx2_long_tue(benchmark::State &state) {
-    for (auto _ : state) {
-		benchmark::DoNotOptimize(memchr_avx2_tue(data.data(), ch2, data.size()));
-	}
-}
-// Register the function as a benchmark
-BENCHMARK(memchr_avx2_long_tue);
 
 BENCHMARK_MAIN();
