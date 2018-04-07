@@ -19,6 +19,7 @@ TEST_CASE("avx2_memchr", "memchr") {
 	CHECK(memchr(line.data(), '2', line.size()) != NULL);
 	CHECK(static_cast<const char*>(memchr(line.data(), '2', line.size())) == (line.data() + 2));
 	CHECK(static_cast<const char*>(memchr(line.data(), ' ', line.size())) == (line.data() + 11));
+	CHECK(static_cast<const char*>(memchr(line.data(), 'W', line.size())) == (line.data() + 116));
 
 	// Simple tests for memchr_avx2
 	CHECK(memchr_avx2(line.data(), '*', line.size()) == NULL);

@@ -46,21 +46,4 @@ void memchr_avx2_long(benchmark::State &state) {
 // Register the function as a benchmark
 BENCHMARK(memchr_avx2_long);
 
-void memchr_avx2_short_tue(benchmark::State &state) {
-    for (auto _ : state) {
-		benchmark::DoNotOptimize(memchr_avx2_tue(data.data(), ch1, data.size()));
-	}
-}
-// Register the function as a benchmark
-BENCHMARK(memchr_avx2_short_tue);
-
-
-void memchr_avx2_long_tue(benchmark::State &state) {
-    for (auto _ : state) {
-		benchmark::DoNotOptimize(memchr_avx2_tue(data.data(), ch2, data.size()));
-	}
-}
-// Register the function as a benchmark
-BENCHMARK(memchr_avx2_long_tue);
-
 BENCHMARK_MAIN();

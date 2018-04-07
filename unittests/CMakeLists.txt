@@ -76,8 +76,8 @@ ENABLE_TESTING()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Used libraries
-SET(LIB_HS "${EXTERNAL_DIR}/lib64/libhs.a")
-SET(LIB_HS_RUNTIME "${EXTERNAL_DIR}/lib64/libhs_runtime.a")
+SET(LIB_HS "${EXTERNAL_DIR}/lib/libhs.a")
+SET(LIB_HS_RUNTIME "${EXTERNAL_DIR}/lib/libhs_runtime.a")
 
 # Include other headers such as fmt library.
 include_directories ("${EXTERNAL_DIR}/include")
