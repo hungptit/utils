@@ -25,6 +25,7 @@ TEST_CASE("avx2_memchr", "memchr") {
 	CHECK(memchr_avx2(line.data(), '2', line.size()) != NULL);
 	CHECK(static_cast<const char*>(memchr_avx2(line.data(), '2', line.size())) == (line.data() + 2));
 	CHECK(static_cast<const char*>(memchr_avx2(line.data(), ' ', line.size())) == (line.data() + 11));
+	CHECK(static_cast<const char*>(memchr_avx2(line.data(), 'W', line.size())) == (line.data() + 116));
 
 	// Simple manual test
 	auto ptr = memchr_avx2(line.data(), ']', line.size());
