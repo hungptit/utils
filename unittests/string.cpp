@@ -3,6 +3,7 @@
 
 #include "fmt/format.h"
 #include "memchr.hpp"
+#include "strcmp.hpp"
 
 #define CATCH_CONFIG_MAIN
 #include "catch/catch.hpp"
@@ -31,4 +32,19 @@ TEST_CASE("avx2_memchr", "memchr") {
 	// Simple manual test
 	auto ptr = memchr_avx2(line.data(), ']', line.size());
 	fmt::print("Data: {}\n", ptr + 1);
+}
+
+
+TEST_CASE("strncmp", "SIMD implementations of strncmp") {
+	std::string line1("Hello");
+	std::string line2("Helle");
+
+	CHECK(strncmp(line1.data(), line2.data(), line1.size()) != 0);
+	CHECK(strncmp(line1.data(), line1.data(), line1.size()) == 0);
+
+	CHECK(!utils::strncmp_sse2(line1.data(), line2.data(), line1.size()));
+	CHECK(utils::strncmp_sse2(line1.data(), line1.data(), line1.size()));
+	
+	CHECK(!utils::strncmp_avx2(line1.data(), line2.data(), line1.size()));
+	CHECK(utils::strncmp_avx2(line1.data(), line1.data(), line1.size()));
 }

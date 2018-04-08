@@ -29,12 +29,28 @@ void memchr_avx2_short(benchmark::State &state) {
 }
 BENCHMARK(memchr_avx2_short);
 
-// memchr
+// memchr_avx2 long
 void memchr_avx2_long(benchmark::State &state) {
     for (auto _ : state) {
         benchmark::DoNotOptimize(memchr_avx2(data.data(), ch2, data.size()));
     }
 }
 BENCHMARK(memchr_avx2_long);
+
+// memchr_avx2 short
+void memchr_avx2_v2_short(benchmark::State &state) {
+    for (auto _ : state) {
+        benchmark::DoNotOptimize(memchr_avx2_v2(data.data(), ch1, data.size()));
+    }
+}
+BENCHMARK(memchr_avx2_v2_short);
+
+// memchr_avx2 long
+void memchr_avx2_v2_long(benchmark::State &state) {
+    for (auto _ : state) {
+        benchmark::DoNotOptimize(memchr_avx2_v2(data.data(), ch2, data.size()));
+    }
+}
+BENCHMARK(memchr_avx2_v2_long);
 
 BENCHMARK_MAIN();
