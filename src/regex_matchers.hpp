@@ -1,6 +1,5 @@
 #pragma once
 
-#include "fmt/format.h"
 #include "hs/hs.h"
 #include <string>
 
@@ -21,10 +20,9 @@ namespace utils {
                 hs_compile_error_t *compile_err;
                 if (hs_compile(pattern.c_str(), HS_FLAG_DOTALL, HS_MODE_BLOCK, NULL, &database,
                                &compile_err) != HS_SUCCESS) {
-                    fmt::MemoryWriter writer;
-                    writer << "Unable to compile pattern \"" << pattern
-                           << "\": " << compile_err->message;
-                    throw std::runtime_error(writer.str());
+					std::string errmsg;
+                    errmsg +=  "Unable to compile pattern \"" + pattern + "\": " + compile_err->message;
+                    throw std::runtime_error(errmsg);
                 }
 
                 if (hs_alloc_scratch(database, &scratch) != HS_SUCCESS) {

@@ -18,7 +18,7 @@ namespace utils {
                 __m128i x = _mm_loadu_si128(reinterpret_cast<const __m128i *>(first + idx));
                 __m128i y = _mm_loadu_si128(reinterpret_cast<const __m128i *>(second + idx));
                 __m128i results = _mm_cmpeq_epi8(x, y);
-                int mask = _mm_movemask_epi8(results);
+                const int mask = _mm_movemask_epi8(results);
                 if (mask) { return false; }
             }
         }
@@ -40,12 +40,12 @@ namespace utils {
                 __m256i x = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(first + idx));
                 __m256i y = _mm256_loadu_si256(reinterpret_cast<const __m256i *>(second + idx));
                 __m256i results = _mm256_cmpeq_epi8(x, y);
-                int mask = _mm256_movemask_epi8(results);
+                const int mask = _mm256_movemask_epi8(results);
                 if (mask) { return false; }
             }
         }
 
-        // Fallback to memcmp for the rest.
-        return memcmp(first + idx, second + idx, res) == 0;
+        // Fallback to strncmp_sse2 for the rest.
+        return strncmp_sse2(first + idx, second + idx, res) == 0;
     }
 }

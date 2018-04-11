@@ -5,6 +5,7 @@
 const std::string
     data("[02/04/2018 23:42:22 job483.example.com db.db92.urgent 103212] "
          "{'LEVEL':'info','MESSAGE':'finished in 0.013\n','PREFIX':'WnfgrqwYG2AAAfC2AgBgdXg'}");
+
 const std::string
     data1("[02/04/2018 23:42:22 job483.example.com db.db92.urgent 103212] "
          "{'LEVEL':'info','MESSAGE':'finished in 0.013\n','PREFIX':'WnfgrqwYG2AAAfC2AgBgdXg'}");
