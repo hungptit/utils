@@ -25,7 +25,7 @@ namespace utils {
         explicit Timestamp() noexcept
             : tm_year(SHIFT_YEAR), tm_mon(SHIFT_MONTH), tm_mday(1), tm_hour(0), tm_min(0),
               tm_sec(0), tm_isdst(0) {
-            update();
+            compute_epoch();
         }
 
         explicit Timestamp(const unsigned char mon, const unsigned char day,
@@ -33,14 +33,14 @@ namespace utils {
                            const unsigned char minute, const unsigned char second) noexcept
             : tm_year(year), tm_mon(mon), tm_mday(day), tm_hour(hour), tm_min(minute),
               tm_sec(second), tm_isdst(0) {
-            update();
+            compute_epoch();
         }
 
         template <typename T>
         Timestamp(T &&t)
             : tm_year(t.tm_year), tm_mon(t.tm_mon), tm_mday(t.tm_mday), tm_hour(t.tm_hour),
               tm_min(t.tm_min), tm_sec(t.tm_sec), tm_isdst(t.tm_isdst) {
-            update();
+            compute_epoch();
         }
 
         // Convert to the tm struct. This is very useful when we want to print out the
@@ -65,41 +65,27 @@ namespace utils {
         unsigned char tm_sec;
         unsigned char tm_isdst;
 
-        void update() {
-            value =
+        void compute_epoch() {
+            _value =
                 (static_cast<int64_t>(tm_year) << 48) + (static_cast<int64_t>(tm_mon) << 40) +
                 (static_cast<int64_t>(tm_mday) << 32) + (static_cast<int64_t>(tm_hour) << 24) +
                 (static_cast<int64_t>(tm_min) << 16) + (static_cast<int64_t>(tm_sec) << 8);
         }
 
-        int64_t value;
+        // Cached epoch that is used to speedup comparators.
+        int64_t _value;
     };
 
     static const Timestamp MIN_TIME(1, 1, 1900, 0, 0, 0);
     static const Timestamp MAX_TIME(1, 1, 2100, 0, 0, 0);
 
-    // TODO: Speedup below comparators using SSE2/AVX2
-    bool operator==(const Timestamp t1, const Timestamp t2) {
-		return t1.value == t2.value;
-        // return std::tie(t1.tm_sec, t1.tm_min, t1.tm_hour, t1.tm_mday, t1.tm_mon, t1.tm_year) ==
-        //        std::tie(t2.tm_sec, t2.tm_min, t2.tm_hour, t2.tm_mday, t2.tm_mon, t2.tm_year);
-    }
+    bool operator==(const Timestamp t1, const Timestamp t2) { return t1._value == t2._value; }
 
-    bool operator>(const Timestamp t1, const Timestamp t2) {
-		return t1.value > t2.value;
-        // return std::tie(t1.tm_year, t1.tm_mon, t1.tm_mday, t1.tm_hour, t1.tm_min, t1.tm_sec) >
-        //        std::tie(t2.tm_year, t2.tm_mon, t2.tm_mday, t2.tm_hour, t2.tm_min, t2.tm_sec);
-    }
+    bool operator>(const Timestamp t1, const Timestamp t2) { return t1._value > t2._value; }
 
-    bool operator<(const Timestamp t1, const Timestamp t2) {
-        return std::tie(t1.tm_year, t1.tm_mon, t1.tm_mday, t1.tm_hour, t1.tm_min, t1.tm_sec) <
-               std::tie(t2.tm_year, t2.tm_mon, t2.tm_mday, t2.tm_hour, t2.tm_min, t2.tm_sec);
-    }
+    bool operator<(const Timestamp t1, const Timestamp t2) { return t1._value < t2._value; }
 
-    bool operator!=(const Timestamp t1, const Timestamp t2) {
-        return std::tie(t1.tm_year, t1.tm_mon, t1.tm_mday, t1.tm_hour, t1.tm_min, t1.tm_sec) !=
-               std::tie(t2.tm_year, t2.tm_mon, t2.tm_mday, t2.tm_hour, t2.tm_min, t2.tm_sec);
-    }
+    bool operator!=(const Timestamp t1, const Timestamp t2) { return t1._value != t2._value; }
 
     template <typename T> T parse_timestamp(const char *ptr) {
         T tm;

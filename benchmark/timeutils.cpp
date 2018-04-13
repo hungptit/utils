@@ -33,8 +33,7 @@ BENCHMARK(simple_parser);
 // Very fast time parser
 void fast_parser(benchmark::State &state) {
     for (auto _ : state) {
-        benchmark::DoNotOptimize(utils::parse_timestamp<utils::Timestamp>(timestamp) ==
-                                 utils::MIN_TIME);
+        benchmark::DoNotOptimize(utils::parse_timestamp<utils::Timestamp>(timestamp));
     }
 }
 BENCHMARK(fast_parser);
