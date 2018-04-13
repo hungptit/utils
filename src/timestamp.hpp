@@ -36,12 +36,11 @@ namespace utils {
             compute_epoch();
         }
 
+		// Copy and move constructor won't recompute _value.
         template <typename T>
-        Timestamp(T &&t)
+        Timestamp(T &&t) noexcept
             : tm_year(t.tm_year), tm_mon(t.tm_mon), tm_mday(t.tm_mday), tm_hour(t.tm_hour),
-              tm_min(t.tm_min), tm_sec(t.tm_sec), tm_isdst(t.tm_isdst) {
-            compute_epoch();
-        }
+              tm_min(t.tm_min), tm_sec(t.tm_sec), tm_isdst(t.tm_isdst), _value(t._value) {}
 
         // Convert to the tm struct. This is very useful when we want to print out the
         // timestamp.
@@ -96,6 +95,7 @@ namespace utils {
         tm.tm_min = parse_digits<2>(ptr + 14, 0);
         tm.tm_sec = parse_digits<2>(ptr + 17, 0);
         tm.tm_isdst = 0; // We do not care about day light saving when parsing log data.
+		tm.compute_epoch();
         return tm;
     }
 
