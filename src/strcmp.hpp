@@ -46,6 +46,6 @@ namespace utils {
         }
 
         // Fallback to strncmp_sse2 for the rest.
-        return strncmp_sse2(first + idx, second + idx, res) == 0;
+        return memcmp(first + idx, second + idx, res) == 0;
     }
 }
