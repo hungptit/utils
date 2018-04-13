@@ -123,9 +123,9 @@ TEST_CASE("utils::Timestamp", "") {
     using value_type = utils::Timestamp;
     value_type tm;
     utils::TimePrinter printer("%m-%d-%Y %H:%M:%S");
-    value_type t1(1, 3, 2018, 10, 10, 9);
-    value_type t2(2, 3, 2018, 5, 21, 49);
-    value_type t3(2, 5, 2018, 0, 1, 3);
+    value_type t1(2018, 1, 3, 10, 10, 9);
+    value_type t2(2018, 2, 3, 5, 21, 49);
+    value_type t3(2018, 2, 5, 0, 1, 3);
     value_type t4;
 
     printer(t1.to_tm());
@@ -144,8 +144,8 @@ TEST_CASE("utils::Timestamp", "") {
     printer(t4.to_tm());
     CHECK_THAT(printer.buffer, Equals("01-01-1900 00:00:00"));
 
-    SECTION("AllTimestamps matcher") {
-        utils::AllTimestamps<value_type> cons;
+    SECTION("All timestamp matcher") {
+        utils::All<value_type> cons;
         CHECK(cons(tm));
     }
 
