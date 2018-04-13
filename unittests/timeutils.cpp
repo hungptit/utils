@@ -49,8 +49,8 @@ TEST_CASE("Very fast timestamp parser", "scribe") {
     utils::experiments::scribe parser;
     auto t = utils::parse_timestamp<utils::Timestamp>(timestamp.data());
     fmt::print("sizeof(t): {}\n", sizeof(t));
-    fmt::print("Parsed data: {0}-{1}-{2} {3}:{4}:{5}\n", t.tm_mon, t.tm_mday, t.tm_year,
-               t.tm_hour, t.tm_min, t.tm_sec);
+    fmt::print("Parsed data: {0}-{1}-{2} {3}:{4}:{5}\n", t.tm_mon(), t.tm_mday(), t.tm_year(),
+               t.tm_hour(), t.tm_min(), t.tm_sec());
     // Print out the parsed results
     // fmt::print("{0} --> {1}\n", timestamp, printer.buffer);
     // CHECK_THAT(printer.buffer, Equals("2018-02-04 23:42:22"));

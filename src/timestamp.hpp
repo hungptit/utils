@@ -19,81 +19,112 @@ namespace utils {
         return initval * 10 + ptr[0] - ZERO;
     }
 
+    namespace {
+        struct _ts {
+            _ts()
+                : tm_year(1900), tm_mon(1), tm_mday(1), tm_hour(0), tm_min(0), tm_sec(0),
+                  tm_isdst(0) {}
+
+            _ts(const unsigned char mon, const unsigned char day, const unsigned short year,
+                const unsigned char hour, const unsigned char minute,
+                const unsigned char second)
+                : tm_year(year), tm_mon(mon), tm_mday(day), tm_hour(hour), tm_min(minute),
+                  tm_sec(second), tm_isdst(0) {}
+
+            template <typename T>
+            _ts(T &&t)
+                : tm_year(t.tm_year), tm_mon(t.tm_mon), tm_mday(t.tm_mday), tm_hour(t.tm_hour),
+                  tm_min(t.tm_min), tm_sec(t.tm_sec) {}
+
+            unsigned short tm_year;
+            unsigned char tm_mon;
+            unsigned char tm_mday;
+            unsigned char tm_hour;
+            unsigned char tm_min;
+            unsigned char tm_sec;
+            unsigned char tm_isdst;
+        };
+
+        union _tsdata {
+            _tsdata() : ts() {}
+            explicit _tsdata(const unsigned char mon, const unsigned char day,
+                             const unsigned short year, const unsigned char hour,
+                             const unsigned char minute, const unsigned char second) noexcept
+                : ts(year, mon, day, hour, minute, second) {}
+            template <typename T> _tsdata(T &&t) : ts(t.ts) {}
+            _ts ts;
+            int64_t value;
+        };
+    }
+
     // A simple data structure to hold time information. This data structure
     // must be similar to struct tm so that we can reuse our parsing code.
     struct Timestamp {
-        explicit Timestamp() noexcept
-            : tm_year(SHIFT_YEAR), tm_mon(SHIFT_MONTH), tm_mday(1), tm_hour(0), tm_min(0),
-              tm_sec(0), tm_isdst(0) {}
+
+        explicit Timestamp() : data() {}
 
         explicit Timestamp(const unsigned char mon, const unsigned char day,
                            const unsigned short year, const unsigned char hour,
                            const unsigned char minute, const unsigned char second) noexcept
-            : tm_year(year), tm_mon(mon), tm_mday(day), tm_hour(hour), tm_min(minute),
-              tm_sec(second), tm_isdst(0) {}
+            : data(mon, day, year, hour, minute, second) {}
 
-		template<typename T>
-        Timestamp(T &&t)
-            : tm_year(t.tm_year), tm_mon(t.tm_mon), tm_mday(t.tm_mday), tm_hour(t.tm_hour),
-              tm_min(t.tm_min), tm_sec(t.tm_sec), tm_isdst(t.tm_isdst) {}
+        template <typename T> Timestamp(T &&t) : data(t.data) {}
 
         // Convert to the tm struct. This is very useful when we want to print out the
         // timestamp.
         struct tm to_tm() const {
             struct tm tm;
-            tm.tm_sec = tm_sec;
-            tm.tm_min = tm_min;
-            tm.tm_hour = tm_hour;
-            tm.tm_mday = tm_mday;
-            tm.tm_mon = tm_mon - SHIFT_MONTH;
-            tm.tm_year = tm_year - SHIFT_YEAR;
-            tm.tm_isdst = tm_isdst;
+            tm.tm_sec = tm_sec();
+            tm.tm_min = tm_min();
+            tm.tm_hour = tm_hour();
+            tm.tm_mday = tm_mday();
+            tm.tm_mon = tm_mon() - SHIFT_MONTH;
+            tm.tm_year = tm_year() - SHIFT_YEAR;
+            tm.tm_isdst = data.ts.tm_isdst;
             return tm;
         }
 
-        unsigned short tm_year;
-        unsigned char tm_mon;
-        unsigned char tm_mday;
-        unsigned char tm_hour;
-        unsigned char tm_min;
-        unsigned char tm_sec;
-        unsigned char tm_isdst;
+        int tm_year() const { return data.ts.tm_year; }
+        int tm_mon() const { return data.ts.tm_mon; }
+        int tm_mday() const { return data.ts.tm_mday; }
+        int tm_hour() const { return data.ts.tm_hour; }
+        int tm_min() const { return data.ts.tm_min; }
+        int tm_sec() const { return data.ts.tm_sec; }
+        int tm_isdst() const { return data.ts.tm_isdst; }
+        _tsdata data;
     };
 
     static const Timestamp MIN_TIME(1, 1, 1900, 0, 0, 0);
     static const Timestamp MAX_TIME(1, 1, 2100, 0, 0, 0);
 
-
-	// TODO: Speedup below comparators using SSE2/AVX2
+    // TODO: Speedup below comparators using SSE2/AVX2
     bool operator==(const Timestamp t1, const Timestamp t2) {
-        return std::tie(t1.tm_sec, t1.tm_min, t1.tm_hour, t1.tm_mday, t1.tm_mon, t1.tm_year) ==
-               std::tie(t2.tm_sec, t2.tm_min, t2.tm_hour, t2.tm_mday, t2.tm_mon, t2.tm_year);
+        return t1.data.value == t2.data.value;
     }
 
     bool operator>(const Timestamp t1, const Timestamp t2) {
-        return std::tie(t1.tm_year, t1.tm_mon, t1.tm_mday, t1.tm_hour, t1.tm_min, t1.tm_sec) >
-               std::tie(t2.tm_year, t2.tm_mon, t2.tm_mday, t2.tm_hour, t2.tm_min, t2.tm_sec);
+		// fmt::print("{0} > {1}\n", t1.data.value, t2.data.value);
+        return t1.data.value > t2.data.value;
     }
 
     bool operator<(const Timestamp t1, const Timestamp t2) {
-        return std::tie(t1.tm_year, t1.tm_mon, t1.tm_mday, t1.tm_hour, t1.tm_min, t1.tm_sec) <
-               std::tie(t2.tm_year, t2.tm_mon, t2.tm_mday, t2.tm_hour, t2.tm_min, t2.tm_sec);
+		// fmt::print("{0} > {1}\n", t1.data.value, t2.data.value);
+        return t1.data.value < t2.data.value;
     }
 
     bool operator!=(const Timestamp t1, const Timestamp t2) {
-        return std::tie(t1.tm_year, t1.tm_mon, t1.tm_mday, t1.tm_hour, t1.tm_min, t1.tm_sec) !=
-               std::tie(t2.tm_year, t2.tm_mon, t2.tm_mday, t2.tm_hour, t2.tm_min, t2.tm_sec);
+        return t1.data.value != t2.data.value;
     }
 
     template <typename T> T parse_timestamp(const char *ptr) {
         T tm;
-        tm.tm_mon = parse_digits<2>(ptr, 0);
-        tm.tm_mday = parse_digits<2>(ptr + 3, 0);
-        tm.tm_year = parse_digits<4>(ptr + 6, 0);
-        tm.tm_hour = parse_digits<2>(ptr + 11, 0);
-        tm.tm_min = parse_digits<2>(ptr + 14, 0);
-        tm.tm_sec = parse_digits<2>(ptr + 17, 0);
-        tm.tm_isdst = 0; // We do not care about day light saving when parsing log data.
+        tm.data.ts.tm_mon = parse_digits<2>(ptr, 0);
+        tm.data.ts.tm_mday = parse_digits<2>(ptr + 3, 0);
+        tm.data.ts.tm_year = parse_digits<4>(ptr + 6, 0);
+        tm.data.ts.tm_hour = parse_digits<2>(ptr + 11, 0);
+        tm.data.ts.tm_min = parse_digits<2>(ptr + 14, 0);
+        tm.data.ts.tm_sec = parse_digits<2>(ptr + 17, 0);
+        tm.data.ts.tm_isdst = 0; // We do not care about day light saving when parsing log data.
         return tm;
     }
 
