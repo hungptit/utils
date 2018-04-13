@@ -113,7 +113,7 @@ namespace utils {
     }
 
     // A timestamp string will be in this format "MM/DD/YYYY hh::mm::ss"
-    template <typename T> T parse_timestamp(const char *ptr) {
+    template <typename T> T parse_scribe_timestamp(const char *ptr) {
         T tm;
         tm.data.ts.tm_mon = parse_digits<2>(ptr, 0);
         tm.data.ts.tm_mday = parse_digits<2>(ptr + 3, 0);
@@ -126,7 +126,7 @@ namespace utils {
     }
 
     // Time constraints
-    template <typename T> struct AllTimestamps {
+    template <typename T> struct All {
         bool operator()(const T) { return true; }
     };
 

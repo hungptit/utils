@@ -4,7 +4,6 @@
 #include "timer.hpp"
 #include "timeutils.hpp"
 #include "timestamp.hpp"
-#include "timestamp_experiments.hpp"
 #include <time.h>
 
 #define CATCH_CONFIG_MAIN
@@ -32,22 +31,9 @@ TEST_CASE("Parsing digits", "Positive") {
     REQUIRE(std::atoi(four.c_str()) == (utils::parse_digits<4>(four.data(), 0)));
 }
 
-TEST_CASE("Parse timestamp", "scribe timestamp") {
-    std::string timestamp("02/04/2018 23:42:22");
-    utils::experiments::scribe parser;
-    std::time_t t = parser(timestamp.data());
-
-    // Print out the parsed results
-    utils::TimePrinter printer("%Y-%m-%d %H:%M:%S");
-    printer(t);
-    fmt::print("{0} --> {1}\n", timestamp, printer.buffer);
-    CHECK_THAT(printer.buffer, Equals("2018-02-04 23:42:22"));
-}
-
 TEST_CASE("Very fast timestamp parser", "scribe") {
     std::string timestamp("02/04/2018 23:42:22");
-    utils::experiments::scribe parser;
-    auto t = utils::parse_timestamp<utils::Timestamp>(timestamp.data());
+    auto t = utils::parse_scribe_timestamp<utils::Timestamp>(timestamp.data());
     fmt::print("sizeof(t): {}\n", sizeof(t));
     fmt::print("Parsed data: {0}-{1}-{2} {3}:{4}:{5}\n", t.tm_mon(), t.tm_mday(), t.tm_year(),
                t.tm_hour(), t.tm_min(), t.tm_sec());
@@ -60,34 +46,31 @@ TEST_CASE("Comparators", "timestamp") {
     std::string timestamp1("01/04/2018 13:42:22");
     std::string timestamp2("02/04/2018 23:00:22");
     std::string timestamp3("02/04/2018 15:31:00");
-    utils::experiments::scribe parser;
-    std::time_t t1 = parser(timestamp1.data());
-    std::time_t t2 = parser(timestamp2.data());
-    std::time_t t3 = parser(timestamp3.data());
+    
+    auto t1 = utils::parse_scribe_timestamp<utils::Timestamp>(timestamp1.data());
+    auto t2 = utils::parse_scribe_timestamp<utils::Timestamp>(timestamp2.data());
+    auto t3 = utils::parse_scribe_timestamp<utils::Timestamp>(timestamp3.data());
 
     // Print out the parsed results
     utils::TimePrinter printer("%Y-%m-%d %H:%M:%S");
 
-    printer(t1);
-    fmt::print("{0} --> {1}\n", timestamp1, printer.buffer);
-    CHECK_THAT(printer.buffer, Equals("2018-01-04 13:42:22"));
+    fmt::print("{0} --> {1}\n", timestamp1, printer(t1.to_tm()));
+    CHECK_THAT(printer(t1.to_tm()), Equals("2018-01-04 13:42:22"));
 
-    printer(t2);
-    fmt::print("{0} --> {1}\n", timestamp2, printer.buffer);
-    CHECK_THAT(printer.buffer, Equals("2018-02-04 23:00:22"));
+    fmt::print("{0} --> {1}\n", timestamp2, printer(t2.to_tm()));
+    CHECK_THAT(printer(t2.to_tm()), Equals("2018-02-04 23:00:22"));
 
-    printer(t3);
-    fmt::print("{0} --> {1}\n", timestamp3, printer.buffer);
-    CHECK_THAT(printer.buffer, Equals("2018-02-04 15:31:00"));
+    fmt::print("{0} --> {1}\n", timestamp3, printer(t3.to_tm()));
+    CHECK_THAT(printer(t3.to_tm()), Equals("2018-02-04 15:31:00"));
 
     // Check all time constraints.
-    utils::AllTimestamps<std::time_t> all;
-    utils::OlderThan<std::time_t> older_than(t3);
-    utils::NewerThan<std::time_t> newer_than(t3);
-    utils::Between<std::time_t> between(t1, t2);
-    utils::Equals<std::time_t> equals(t3);
-    CHECK(all(t1));
+    utils::All<utils::Timestamp> all;
+    utils::OlderThan<utils::Timestamp> older_than(t3);
+    utils::NewerThan<utils::Timestamp> newer_than(t3);
+    utils::Between<utils::Timestamp> between(t1, t2);
+    utils::Equals<utils::Timestamp> equals(t3);
 
+    CHECK(all(t1));
     CHECK(!older_than(t1));
     CHECK(older_than(t2));
 

@@ -144,8 +144,8 @@ TEST_CASE("utils::Timestamp", "") {
     printer(t4.to_tm());
     CHECK_THAT(printer.buffer, Equals("01-01-1900 00:00:00"));
 
-    SECTION("AllTimestamps matcher") {
-        utils::AllTimestamps<value_type> cons;
+    SECTION("All timestamp matcher") {
+        utils::All<value_type> cons;
         CHECK(cons(tm));
     }
 
