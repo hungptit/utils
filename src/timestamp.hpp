@@ -72,7 +72,7 @@ namespace utils {
                 (static_cast<int64_t>(tm_min) << 16) + (static_cast<int64_t>(tm_sec) << 8);
         }
 
-        // Cached epoch that is used to speedup comparators.
+        // Cache epoch value whcih is be used to speedup comparators.
         int64_t _value;
     };
 
