@@ -105,9 +105,9 @@ TEST_CASE("utils::Timestamp", "") {
 	using value_type = utils::Timestamp;
 	value_type tm;
 	utils::TimePrinter printer("%m-%d-%Y %H:%M:%S");
-	value_type t1(1, 3, 2018, 10, 10, 9);
-	value_type t2(2, 3, 2018, 5, 21, 49);
-	value_type t3(2, 5, 2018, 0, 1, 3);
+	value_type t1(2, 1, 3, 10, 10, 9);
+	value_type t2(2, 2, 3, 5, 21, 49);
+	value_type t3(2, 2, 5, 0, 1, 3);
 	
 	CHECK(t1 == t1);
 	CHECK_FALSE(t1 == t2);

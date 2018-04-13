@@ -19,43 +19,43 @@ namespace utils {
         return initval * 10 + ptr[0] - ZERO;
     }
 
-    namespace {
+    namespace detail {
         struct _ts {
             _ts()
-                : tm_year(1900), tm_mon(1), tm_mday(1), tm_hour(0), tm_min(0), tm_sec(0),
-                  tm_isdst(0) {}
+                : tm_isdst(0), tm_sec(0), tm_min(0), tm_hour(0), tm_mday(1), tm_mon(1),
+                  tm_year(1900) {}
 
-            _ts(const unsigned char mon, const unsigned char day, const unsigned short year,
+            _ts(const unsigned short year, const unsigned char month, const unsigned short day,
                 const unsigned char hour, const unsigned char minute,
                 const unsigned char second)
-                : tm_year(year), tm_mon(mon), tm_mday(day), tm_hour(hour), tm_min(minute),
-                  tm_sec(second), tm_isdst(0) {}
+                : tm_isdst(0), tm_sec(second), tm_min(minute), tm_hour(hour), tm_mday(day),
+                  tm_mon(month), tm_year(year) {}
 
             template <typename T>
             _ts(T &&t)
-                : tm_year(t.tm_year), tm_mon(t.tm_mon), tm_mday(t.tm_mday), tm_hour(t.tm_hour),
-                  tm_min(t.tm_min), tm_sec(t.tm_sec) {}
+                : tm_isdst(t.tm_isdst), tm_sec(t.tm_sec), tm_min(t.tm_min), tm_hour(t.tm_hour),
+                  tm_mday(t.tm_mday), tm_mon(t.tm_mon), tm_year(t.tm_year) {}
 
-            unsigned short tm_year;
-            unsigned char tm_mon;
-            unsigned char tm_mday;
-            unsigned char tm_hour;
-            unsigned char tm_min;
-            unsigned char tm_sec;
             unsigned char tm_isdst;
+            unsigned char tm_sec;
+            unsigned char tm_min;
+            unsigned char tm_hour;
+            unsigned char tm_mday;
+            unsigned char tm_mon;
+            unsigned short tm_year;
         };
 
         union _tsdata {
             _tsdata() : ts() {}
-            explicit _tsdata(const unsigned char mon, const unsigned char day,
-                             const unsigned short year, const unsigned char hour,
+            explicit _tsdata(const unsigned short year, const unsigned char mon,
+                             const unsigned char day, const unsigned char hour,
                              const unsigned char minute, const unsigned char second) noexcept
                 : ts(year, mon, day, hour, minute, second) {}
-            template <typename T> _tsdata(T &&t) : ts(t.ts) {}
-            _ts ts;
+            template <typename T> _tsdata(T &&t) : value(t.value) {}
+            detail::_ts ts;
             int64_t value;
         };
-    }
+    } // namespace detail
 
     // A simple data structure to hold time information. This data structure
     // must be similar to struct tm so that we can reuse our parsing code.
@@ -63,10 +63,10 @@ namespace utils {
 
         explicit Timestamp() : data() {}
 
-        explicit Timestamp(const unsigned char mon, const unsigned char day,
-                           const unsigned short year, const unsigned char hour,
+        explicit Timestamp(const unsigned short year, const unsigned char mon,
+                           const unsigned char day, const unsigned char hour,
                            const unsigned char minute, const unsigned char second) noexcept
-            : data(mon, day, year, hour, minute, second) {}
+            : data(year, mon, day, hour, minute, second) {}
 
         template <typename T> Timestamp(T &&t) : data(t.data) {}
 
@@ -91,24 +91,23 @@ namespace utils {
         int tm_min() const { return data.ts.tm_min; }
         int tm_sec() const { return data.ts.tm_sec; }
         int tm_isdst() const { return data.ts.tm_isdst; }
-        _tsdata data;
+        detail::_tsdata data;
     };
 
-    static const Timestamp MIN_TIME(1, 1, 1900, 0, 0, 0);
-    static const Timestamp MAX_TIME(1, 1, 2100, 0, 0, 0);
+    static const Timestamp MIN_TIME(1900, 1, 1, 0, 0, 0);
+    static const Timestamp MAX_TIME(2100, 1, 1, 0, 0, 0);
 
-    // TODO: Speedup below comparators using SSE2/AVX2
     bool operator==(const Timestamp t1, const Timestamp t2) {
         return t1.data.value == t2.data.value;
     }
 
     bool operator>(const Timestamp t1, const Timestamp t2) {
-		// fmt::print("{0} > {1}\n", t1.data.value, t2.data.value);
+        // fmt::print("{0} > {1}\n", t1.data.value, t2.data.value);
         return t1.data.value > t2.data.value;
     }
 
     bool operator<(const Timestamp t1, const Timestamp t2) {
-		// fmt::print("{0} > {1}\n", t1.data.value, t2.data.value);
+        // fmt::print("{0} > {1}\n", t1.data.value, t2.data.value);
         return t1.data.value < t2.data.value;
     }
 
