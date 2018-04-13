@@ -32,4 +32,19 @@ TEST_CASE("Constructor", "utils::Timestamp") {
 
     utils::TimePrinter printer("%Y-%m-%d %H:%M:%S");
     CHECK_THAT(printer(tmin.to_tm()), Equals("1900-01-01 00:00:00"));
+    CHECK_THAT(printer(tmax.to_tm()), Equals("2100-01-01 00:00:00"));
+    CHECK_THAT(printer(t1.to_tm()), Equals("2018-03-07 01:12:34"));
+    CHECK_THAT(printer(t2.to_tm()), Equals("2005-01-10 12:57:04"));
+    CHECK_THAT(printer(t3.to_tm()), Equals("2017-09-12 23:01:56"));
+	CHECK(t1 > tmin);
+	CHECK(t2 > tmin);
+	CHECK(t3 > tmin);
+	CHECK(t1 < tmax);
+	CHECK(t2 < tmax);
+	CHECK(t3 < tmax);
+	CHECK(t1 > t2);
+	CHECK(t1 > t3);
+	CHECK(t3 < t1);
+	CHECK(t1 != t2);
+	CHECK(t1 == t1);
 }

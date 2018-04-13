@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ctime>
-#include <tuple>
 
 namespace utils {
     static constexpr char ZERO = '0';
@@ -102,12 +101,10 @@ namespace utils {
     }
 
     bool operator>(const Timestamp t1, const Timestamp t2) {
-        // fmt::print("{0} > {1}\n", t1.data.value, t2.data.value);
         return t1.data.value > t2.data.value;
     }
 
     bool operator<(const Timestamp t1, const Timestamp t2) {
-        // fmt::print("{0} > {1}\n", t1.data.value, t2.data.value);
         return t1.data.value < t2.data.value;
     }
 
@@ -115,6 +112,7 @@ namespace utils {
         return t1.data.value != t2.data.value;
     }
 
+    // A timestamp string will be in this format "MM/DD/YYYY hh::mm::ss"
     template <typename T> T parse_timestamp(const char *ptr) {
         T tm;
         tm.data.ts.tm_mon = parse_digits<2>(ptr, 0);
