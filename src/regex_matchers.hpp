@@ -35,17 +35,16 @@ namespace utils {
                 hs_free_database(database);
             }
 
-            bool operator()(const std::string &data) {
-                if (data.empty()) return false;
-                char *ptr = const_cast<char *>(pattern.c_str());
+            bool operator()(const char *ptr, const unsigned int len) {
+                if (ptr == NULL) return false;
                 auto errcode =
-                    hs_scan(database, data.data(), data.size(), 0, scratch, event_handler, ptr);
+                    hs_scan(database, ptr, len , 0, scratch, event_handler, NULL);
                 if (errcode == HS_SUCCESS) {
                     return false;
                 } else if (errcode == HS_SCAN_TERMINATED) {
                     return true;
                 } else {
-                    throw std::runtime_error("Unable to scan input buffer");
+                    throw std::runtime_error("Unable to scan the input buffer");
                 }
             }
 

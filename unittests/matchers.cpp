@@ -183,14 +183,14 @@ TEST_CASE("Regular expression matcher", "utils::RegexMatcher") {
 
     SECTION("Simple test") {
         utils::hyperscan::RegexMatcher matcher("my.*line");
-        CHECK(matcher(line1));
-        CHECK(matcher(line2));
-        CHECK(!matcher(line3));
+        CHECK(matcher(line1.data(), static_cast<unsigned int>(line1.size())));
+        CHECK(matcher(line2.data(), static_cast<unsigned int>(line2.size())));
+        CHECK(!matcher(line3.data(), static_cast<unsigned int>(line3.size())));
     }
 
     SECTION("Negative tests") {
         utils::hyperscan::RegexMatcher matcher("foo");
-        CHECK(!matcher(line1));
-        CHECK(!matcher(line2));
+        CHECK(!matcher(line1.data(), static_cast<unsigned int>(line1.size())));
+        CHECK(!matcher(line2.data(), static_cast<unsigned int>(line2.size())));
     }
 }
