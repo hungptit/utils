@@ -48,7 +48,6 @@ namespace utils {
                 }
             }
 
-
           private:
             hs_database_t *database = NULL;
             hs_scratch_t *scratch = NULL;
