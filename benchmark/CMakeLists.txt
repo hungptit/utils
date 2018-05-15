@@ -72,7 +72,7 @@ include_directories ("${ROOT_DIR}/src")
 
 # Used libraries
 SET(LIB_BENCHMARK "${EXTERNAL_DIR}/lib/libbenchmark.a")
-set(COMMAND_SRC_FILES string timeutils memchr)
+set(COMMAND_SRC_FILES string timeutils memchr lookuptable)
 foreach (src_file ${COMMAND_SRC_FILES})
   ADD_EXECUTABLE(${src_file} ${src_file}.cpp)
   TARGET_LINK_LIBRARIES(${src_file} -lpthread -lm ${LIB_BENCHMARK})

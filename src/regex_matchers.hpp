@@ -37,7 +37,8 @@ namespace utils {
             }
 
             const bool operator()(const char *data, const int len) {
-                if (data == nullptr) return true;
+				if (patern.empty()) return true;
+                if (data == nullptr) return false;
                 auto errcode = hs_scan(database, data, len, 0, scratch, event_handler, nullptr);
                 if (errcode == HS_SUCCESS) {
                     return false;
