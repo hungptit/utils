@@ -23,14 +23,28 @@ const std::string pattern1("RESOURCE");
 const std::string pattern2("SENDERID");
 const std::string pattern3("PREFIX");
 const std::string pattern4("FOOOOO");
+const std::string pattern5("EXCHANGE");
 void benchmark_find_slow(benchmark::State &state) {
-    for (auto _ : state) { benchmark::DoNotOptimize(find_slow(pattern1)); }
+    for (auto _ : state) {
+        benchmark::DoNotOptimize(find_slow(pattern1));
+        benchmark::DoNotOptimize(find_slow(pattern2));
+        benchmark::DoNotOptimize(find_slow(pattern3));
+        benchmark::DoNotOptimize(find_slow(pattern4));
+        benchmark::DoNotOptimize(find_slow(pattern5));
+    }
 }
 BENCHMARK(benchmark_find_slow);
 
 void benchmark_find_fast(benchmark::State &state) {
-    for (auto _ : state) { benchmark::DoNotOptimize(find_fast<7>(pattern1)); }
+    for (auto _ : state) {
+        benchmark::DoNotOptimize(find_fast<7>(pattern1));
+        benchmark::DoNotOptimize(find_fast<7>(pattern2));
+        benchmark::DoNotOptimize(find_fast<7>(pattern3));
+        benchmark::DoNotOptimize(find_fast<7>(pattern4));
+        benchmark::DoNotOptimize(find_fast<7>(pattern5));
+    }
 }
+
 BENCHMARK(benchmark_find_fast);
 
 BENCHMARK_MAIN();
