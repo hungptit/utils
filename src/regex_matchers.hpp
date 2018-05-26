@@ -42,20 +42,18 @@ namespace utils {
 
             const bool is_matched(const char *data, const size_t len) {
                 if (data == nullptr) return true;
-                char *ptr = const_cast<char*>(pattern.data());
+                char *ptr = const_cast<char *>(pattern.data());
                 auto errcode = hs_scan(database, data, len, 0, scratch, event_handler, ptr);
                 if (errcode == HS_SUCCESS) {
                     return false;
                 } else if (errcode == HS_SCAN_TERMINATED) {
                     return true;
                 } else {
-                    throw std::runtime_error("Unable to scan input buffer");
+                    throw std::runtime_error("Unable to scan the input buffer");
                 }
             }
 
-
           private:
-
             hs_database_t *database = NULL;
             hs_scratch_t *scratch = NULL;
             std::string pattern;
