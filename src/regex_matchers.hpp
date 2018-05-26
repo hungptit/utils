@@ -18,11 +18,10 @@ namespace utils {
             explicit RegexMatcher(const std::string &patt) {
                 pattern = patt;
                 hs_compile_error_t *compile_err;
-                if (hs_compile(pattern.c_str(), HS_FLAG_DOTALL, HS_MODE_BLOCK, NULL, &database,
-                               &compile_err) != HS_SUCCESS) {
-                    std::string errmsg;
-                    errmsg += "Unable to compile pattern \"" + pattern +
-                              "\": " + compile_err->message;
+                if (hs_compile(pattern.c_str(), HS_FLAG_DOTALL, HS_MODE_BLOCK, nullptr,
+                               &database, &compile_err) != HS_SUCCESS) {
+                    const std::string errmsg = std::string("Unable to compile pattern \"") +
+                                               pattern + "\": " + compile_err->message;
                     throw std::runtime_error(errmsg);
                 }
 
@@ -37,6 +36,7 @@ namespace utils {
             }
 
             const bool operator()(const std::string &data) {
+                if (data.empty()) return true;
                 return is_matched(data.data(), data.size());
             }
 
@@ -53,8 +53,8 @@ namespace utils {
             }
 
           private:
-            hs_database_t *database = NULL;
-            hs_scratch_t *scratch = NULL;
+            hs_database_t *database = nullptr;
+            hs_scratch_t *scratch = nullptr;
             std::string pattern;
         };
     } // namespace hyperscan

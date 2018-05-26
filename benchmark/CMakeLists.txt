@@ -10,18 +10,6 @@ set(CMAKE_INSTALL_PREFIX "$ENV{HOME}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-# Read the git tags to determine the project version
-include(GetGitVersion)
-get_git_version(GIT_VERSION)
-
-# Tell the user what versions we are using
-string(REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" VERSION ${GIT_VERSION})
-message("-- Version: ${VERSION}")
-
-# The version of the libraries
-set(GENERIC_LIB_VERSION ${VERSION})
-string(SUBSTRING ${VERSION} 0 1 GENERIC_LIB_SOVERSION)
-
 include(CheckCXXCompilerFlag)
 include(AddCXXCompilerFlag)
 include(CXXFeatureCheck)
@@ -84,7 +72,7 @@ include_directories ("${ROOT_DIR}/src")
 
 # Used libraries
 SET(LIB_BENCHMARK "${EXTERNAL_DIR}/lib/libbenchmark.a")
-set(COMMAND_SRC_FILES string timeutils memchr)
+set(COMMAND_SRC_FILES string timeutils memchr lookuptable)
 foreach (src_file ${COMMAND_SRC_FILES})
   ADD_EXECUTABLE(${src_file} ${src_file}.cpp)
   TARGET_LINK_LIBRARIES(${src_file} -lpthread -lm ${LIB_BENCHMARK})
