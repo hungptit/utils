@@ -42,8 +42,7 @@ namespace utils {
 
             const bool is_matched(const char *data, const size_t len) {
                 if (data == nullptr) return true;
-                char *ptr = const_cast<char *>(pattern.data());
-                auto errcode = hs_scan(database, data, len, 0, scratch, event_handler, ptr);
+                auto errcode = hs_scan(database, data, len, 0, scratch, event_handler, nullptr);
                 if (errcode == HS_SUCCESS) {
                     return false;
                 } else if (errcode == HS_SCAN_TERMINATED) {
