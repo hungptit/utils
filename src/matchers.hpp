@@ -11,6 +11,28 @@ namespace utils {
         bool operator()(const char *, const char *) { return true; }
     };
 
+    // Matchers used for performance talks.
+    namespace experiments {
+        struct ExactMatch {
+            explicit ExactMatch(const std::string &patt) : pattern(patt) {}
+            bool is_matched(const std::string &line) {
+                if (line.size() < pattern.size()) { return false; }
+                return line.find(pattern) != std::string::npos;
+            }
+            const std::string pattern;
+        };
+
+        struct ExactMatchSSE2 {
+            explicit ExactMatchSSE2(const std::string &patt) : pattern(patt) {} //
+            bool is_matched(const std::string &line) {
+                return sse2::sse2_strstr_v2(line.data(), line.size(), pattern.data(),
+                                            pattern.size()) != std::string::npos;
+            }
+            const std::string pattern;
+        };
+
+    } // namespace experiments
+
     namespace baseline {
         // Check that a searched string has a given pattern.
         class StartsWith {

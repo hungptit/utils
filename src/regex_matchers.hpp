@@ -2,8 +2,19 @@
 
 #include "hs/hs.h"
 #include <string>
+#include <regex>
 
 namespace utils {
+    namespace experiments {
+        struct RegexMatcher {
+            RegexMatcher(const std::string &patt) : search_pattern(patt) {}
+            bool is_matched(const char *begin, const size_t len) {
+                return std::regex_search(begin, begin + len, search_pattern);
+            }
+            std::regex search_pattern;
+        };
+    } // namespace experiments
+
     namespace hyperscan {
         namespace {
             // An event handle callback.
@@ -12,6 +23,7 @@ namespace utils {
                 return HS_SCAN_TERMINATED;
             }
         } // namespace
+
 
         class RegexMatcher {
           public:
