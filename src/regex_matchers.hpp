@@ -29,8 +29,8 @@ namespace utils {
             explicit RegexMatcher(const std::string &patt) {
                 pattern = patt;
                 hs_compile_error_t *compile_err;
-                constexpr int mode = HS_FLAG_DOTALL | HS_FLAG_SINGLEMATCH;
-                // constexpr int mode = HS_FLAG_DOTALL | HS_FLAG_SINGLEMATCH | HS_CPU_FEATURES_AVX2;
+                // constexpr int mode = HS_FLAG_DOTALL | HS_FLAG_SINGLEMATCH;
+                constexpr int mode = HS_FLAG_DOTALL | HS_FLAG_SINGLEMATCH | HS_CPU_FEATURES_AVX2;
                 if (hs_compile(pattern.c_str(), mode,
                                HS_MODE_BLOCK, nullptr, &database, &compile_err) != HS_SUCCESS) {
                     const std::string errmsg = std::string("Unable to compile pattern \"") +
