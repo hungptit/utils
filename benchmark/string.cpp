@@ -19,8 +19,8 @@ const std::string pattern("finished1234");
 
 // Basic implementation.
 void std_string_find(benchmark::State &state) {
-    utils::baseline::Contains contains(pattern);
-    for (auto _ : state) { benchmark::DoNotOptimize(contains(data)); }
+    utils::experiments::ExactMatch contains(pattern);
+    for (auto _ : state) { benchmark::DoNotOptimize(contains.is_matched(data)); }
 }
 // Register the function as a benchmark
 BENCHMARK(std_string_find);
@@ -34,21 +34,19 @@ BENCHMARK(sse2_string_find);
 
 #include "matchers_avx2.hpp"
 void avx2_string_find(benchmark::State &state) {
-    utils::avx2::Contains contains(pattern);
-    for (auto _ : state) { benchmark::DoNotOptimize(contains(data)); }
+    utils::ExactMatchAVX2 contains(pattern);
+    for (auto _ : state) { benchmark::DoNotOptimize(contains.is_matched(data.data(), data.size())); }
 }
 BENCHMARK(avx2_string_find);
 
 // ==
 void string_equal(benchmark::State &state) {
-    utils::avx2::Contains contains(pattern);
     for (auto _ : state) { benchmark::DoNotOptimize(data1 == data2); }
 }
 BENCHMARK(string_equal);
 
 // strncmp
 void string_strncmp(benchmark::State &state) {
-    utils::avx2::Contains contains(pattern);
     for (auto _ : state) {
         benchmark::DoNotOptimize(strncmp(data1.data(), data2.data(), data1.size()));
     }
@@ -57,7 +55,6 @@ void string_strncmp(benchmark::State &state) {
 BENCHMARK(string_strncmp);
 
 void string_memcmp(benchmark::State &state) {
-    utils::avx2::Contains contains(pattern);
     for (auto _ : state) {
         benchmark::DoNotOptimize(memcmp(data1.data(), data2.data(), data1.size()));
     }
@@ -67,7 +64,6 @@ BENCHMARK(string_memcmp);
 
 // SSE2 version of strncmp
 void strcmp_sse2(benchmark::State &state) {
-    utils::avx2::Contains contains(pattern);
     for (auto _ : state) {
         benchmark::DoNotOptimize(utils::strncmp_sse2(data1.data(), data2.data(), data1.size()));
     }
@@ -76,7 +72,6 @@ BENCHMARK(strcmp_sse2);
 
 // avx2 version of strncmp
 void strcmp_avx2(benchmark::State &state) {
-    utils::avx2::Contains contains(pattern);
     for (auto _ : state) {
         benchmark::DoNotOptimize(utils::strncmp_avx2(data1.data(), data2.data(), data1.size()));
     }

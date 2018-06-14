@@ -136,5 +136,3 @@ namespace utils {
     } // namespace sse2
 
 } // namespace utils
-
-// Support AVX2

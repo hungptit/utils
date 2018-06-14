@@ -5,10 +5,10 @@
 #include <immintrin.h>
 
 namespace utils {
-    // An SSE2 implementation of strncmp. 
+    // An SSE2 implementation of strncmp.
     bool strncmp_sse2(const char *first, const char *second, const size_t len) {
         size_t idx = 0;
-		
+
         // Use SSE2 for the first len - (len%16) characters.
         constexpr size_t NBYTES = 16;
         const size_t res = len % NBYTES;
@@ -26,11 +26,11 @@ namespace utils {
         // Fallback to memcmp for the rest.
         return memcmp(first + idx, second + idx, res) == 0;
     }
-	
-    // An AVX2 implementation of strncmp. 
+
+    // An AVX2 implementation of strncmp.
     bool strncmp_avx2(const char *first, const char *second, const size_t len) {
         size_t idx = 0;
-		
+
         // Use AVX2 for the first len - (len %32) characters.
         constexpr size_t NBYTES = 32;
         const size_t res = len % NBYTES;
@@ -48,4 +48,4 @@ namespace utils {
         // Fallback to strncmp_sse2 for the rest.
         return strncmp_sse2(first + idx, second + idx, res);
     }
-}
+} // namespace utils
