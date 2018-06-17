@@ -11,39 +11,6 @@
 #include "catch/catch.hpp"
 using Catch::Matchers::Equals;
 
-TEST_CASE("StartsWith", "baseline") {
-    const std::string pattern("This");
-    const std::string line1("This is the first line!");
-    const std::string line2("Thisn't the first line!");
-    const std::string line3("My first line!");
-    utils::baseline::StartsWith cons(pattern);
-    CHECK(cons(line1));
-    CHECK(cons(line2));
-    CHECK(!cons(line3));
-}
-
-TEST_CASE("Contains", "baseline") {
-    const std::string pattern("the");
-    const std::string line1("This is the first line!");
-    const std::string line2("Thisn't the first line!");
-    const std::string line3("My first line!");
-    utils::baseline::Contains cons(pattern);
-    CHECK(cons(line1));
-    CHECK(cons(line2));
-    CHECK(!cons(line3));
-}
-
-TEST_CASE("Equals", "baseline") {
-    const std::string pattern("My first line!");
-    const std::string line1("This is the first line!");
-    const std::string line2("Thisn't the first line!");
-    const std::string line3("My first line!");
-    utils::baseline::Equals cons(pattern);
-    CHECK(!cons(line1));
-    CHECK(!cons(line2));
-    CHECK(cons(line3));
-}
-
 TEST_CASE("StartsWith-sse2", "") {
     const std::string pattern("This");
     const std::string line1("This is the first line!");
@@ -66,17 +33,6 @@ TEST_CASE("Contains-sse2", "") {
     CHECK(!cons(line3));
 }
 
-TEST_CASE("Equals-sse2", "") {
-    const std::string pattern("My first line!");
-    const std::string line1("This is the first line!");
-    const std::string line2("Thisn't the first line!");
-    const std::string line3("My first line!");
-
-    utils::baseline::Equals cons(pattern);
-    CHECK(!cons(line1));
-    CHECK(!cons(line2));
-    CHECK(cons(line3));
-}
 
 TEST_CASE("StartsWith-avx2", "") {
     const std::string pattern("This");
@@ -102,17 +58,17 @@ TEST_CASE("Contains-avx2", "") {
     CHECK(!cons(line3));
 }
 
-TEST_CASE("Equals-avx2", "") {
-    const std::string pattern("My first line!");
-    const std::string line1("This is the first line!");
-    const std::string line2("Thisn't the first line!");
-    const std::string line3("My first line!");
+// TEST_CASE("Equals-avx2", "") {
+//     const std::string pattern("My first line!");
+//     const std::string line1("This is the first line!");
+//     const std::string line2("Thisn't the first line!");
+//     const std::string line3("My first line!");
 
-    utils::baseline::Equals cons(pattern);
-    CHECK(!cons(line1));
-    CHECK(!cons(line2));
-    CHECK(cons(line3));
-}
+//     utils::baseline::Equals cons(pattern);
+//     CHECK(!cons(line1));
+//     CHECK(!cons(line2));
+//     CHECK(cons(line3));
+// }
 
 TEST_CASE("utils::Timestamp", "") {
     using value_type = utils::Timestamp;
