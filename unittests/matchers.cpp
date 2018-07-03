@@ -33,6 +33,7 @@ TEST_CASE("Contains-sse2", "") {
     CHECK(!cons(line3));
 }
 
+<<<<<<< HEAD
 TEST_CASE("Equals-sse2", "") {
     std::string pattern("My first line!");
     const std::string line1("This is the first line!");
@@ -44,6 +45,8 @@ TEST_CASE("Equals-sse2", "") {
     CHECK(!cons(line2));
     CHECK(cons(line3));
 }
+=======
+>>>>>>> 6b83b11f85e3b868aa63cd4bd796c9eaa086bf76
 
 TEST_CASE("StartsWith-avx2", "") {
     const std::string pattern("This");
@@ -69,6 +72,7 @@ TEST_CASE("Contains-avx2", "") {
     CHECK(!cons(line3));
 }
 
+<<<<<<< HEAD
 TEST_CASE("Equals-avx2", "") {
     const std::string pattern("My first line!");
     const std::string line1("This is the first line!");
@@ -80,6 +84,19 @@ TEST_CASE("Equals-avx2", "") {
     CHECK(!cons(line2));
     CHECK(cons(line3));
 }
+=======
+// TEST_CASE("Equals-avx2", "") {
+//     const std::string pattern("My first line!");
+//     const std::string line1("This is the first line!");
+//     const std::string line2("Thisn't the first line!");
+//     const std::string line3("My first line!");
+
+//     utils::baseline::Equals cons(pattern);
+//     CHECK(!cons(line1));
+//     CHECK(!cons(line2));
+//     CHECK(cons(line3));
+// }
+>>>>>>> 6b83b11f85e3b868aa63cd4bd796c9eaa086bf76
 
 TEST_CASE("utils::Timestamp", "") {
     using value_type = utils::Timestamp;

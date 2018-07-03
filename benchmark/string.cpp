@@ -4,6 +4,8 @@
 #include <array>
 #include <benchmark/benchmark.h>
 
+#include "experiments.hpp"
+
 const std::string
     data("[02/04/2018 23:42:22 job483.example.com db.db92.urgent 103212] "
          "{'LEVEL':'info','MESSAGE':'finished in 0.013\n','PREFIX':'WnfgrqwYG2AAAfC2AgBgdXg'}");
@@ -20,7 +22,7 @@ const std::string pattern("finished1234");
 
 // Basic implementation.
 void std_string_find(benchmark::State &state) {
-    experiments::ExactMatch contains(pattern);
+    utils::experiments::ExactMatch contains(pattern);
     for (auto _ : state) { benchmark::DoNotOptimize(contains.is_matched(data)); }
 }
 // Register the function as a benchmark
