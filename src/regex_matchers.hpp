@@ -5,16 +5,6 @@
 #include <string>
 
 namespace utils {
-    namespace experiments {
-        struct RegexMatcher {
-            RegexMatcher(const std::string &patt) : search_pattern(patt) {}
-            bool is_matched(const char *begin, const size_t len) {
-                return std::regex_search(begin, begin + len, search_pattern);
-            }
-            std::regex search_pattern;
-        };
-    } // namespace experiments
-
     namespace hyperscan {
         namespace {
             // An event handle callback.
@@ -24,15 +14,16 @@ namespace utils {
             }
         } // namespace
 
-        class RegexMatcher {
+        /*
+         * @mode: Use HS_CPU_FEATURES_AVX2 to turn on support for AVX2.
+         */
+        class RegexBase {
           public:
-            explicit RegexMatcher(const std::string &patt) {
+            explicit RegexBase(const std::string &patt, const int mode) {
                 pattern = patt;
                 hs_compile_error_t *compile_err;
-                constexpr int mode = HS_FLAG_DOTALL | HS_FLAG_SINGLEMATCH;
-                // constexpr int mode = HS_FLAG_DOTALL | HS_FLAG_SINGLEMATCH | HS_CPU_FEATURES_AVX2;
-                if (hs_compile(pattern.c_str(), mode,
-                               HS_MODE_BLOCK, nullptr, &database, &compile_err) != HS_SUCCESS) {
+                if (hs_compile(pattern.c_str(), mode, HS_MODE_BLOCK, nullptr, &database,
+                               &compile_err) != HS_SUCCESS) {
                     const std::string errmsg = std::string("Unable to compile pattern \"") +
                                                pattern + "\": " + compile_err->message;
                     throw std::runtime_error(errmsg);
@@ -43,10 +34,22 @@ namespace utils {
                 }
             }
 
-            ~RegexMatcher() {
+            ~RegexBase() {
                 hs_free_scratch(scratch);
                 hs_free_database(database);
             }
+
+          protected:
+            hs_database_t *database = nullptr;
+            hs_scratch_t *scratch = nullptr;
+            std::string pattern;
+        };
+
+        template <typename Base> class RegexMatcherReg : Base {
+          public:
+            RegexMatcherReg(const std::string &patt,
+                            const int mode = (HS_FLAG_DOTALL | HS_FLAG_SINGLEMATCH))
+                : Base(patt, mode) {}
 
             const bool operator()(const std::string &data) {
                 if (data.empty()) return true;
@@ -55,7 +58,8 @@ namespace utils {
 
             const bool is_matched(const char *data, const size_t len) {
                 if (data == nullptr) return true;
-                auto errcode = hs_scan(database, data, len, 0, scratch, event_handler, nullptr);
+                auto errcode = hs_scan(Base::database, data, len, 0, Base::scratch,
+                                       event_handler, nullptr);
                 if (errcode == HS_SUCCESS) {
                     return false;
                 } else if (errcode == HS_SCAN_TERMINATED) {
@@ -64,11 +68,35 @@ namespace utils {
                     throw std::runtime_error("Unable to scan the input buffer");
                 }
             }
-
-          private:
-            hs_database_t *database = nullptr;
-            hs_scratch_t *scratch = nullptr;
-            std::string pattern;
         };
+
+        using RegexMatcher = RegexMatcherReg<RegexBase>;
+
+        template <typename Base> class RegexMatcherInverse : Base {
+          public:
+            RegexMatcherInverse(const std::string &patt,
+                                const int mode = (HS_FLAG_DOTALL | HS_FLAG_SINGLEMATCH))
+                : Base(patt, mode) {}
+
+            const bool operator()(const std::string &data) {
+                if (data.empty()) return true;
+                return is_matched(data.data(), data.size());
+            }
+
+            const bool is_matched(const char *data, const size_t len) {
+                if (data == nullptr) return true;
+                auto errcode = hs_scan(Base::database, data, len, 0, Base::scratch,
+                                       event_handler, nullptr);
+                if (errcode == HS_SUCCESS) {
+                    return true;
+                } else if (errcode == HS_SCAN_TERMINATED) {
+                    return false;
+                } else {
+                    throw std::runtime_error("Unable to scan the input buffer");
+                }
+            }
+        };
+
+        using RegexMatcherInv = RegexMatcherInverse<RegexBase>;
     } // namespace hyperscan
 } // namespace utils
