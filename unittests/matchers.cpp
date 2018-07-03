@@ -11,39 +11,6 @@
 #include "catch/catch.hpp"
 using Catch::Matchers::Equals;
 
-TEST_CASE("StartsWith", "baseline") {
-    const std::string pattern("This");
-    const std::string line1("This is the first line!");
-    const std::string line2("Thisn't the first line!");
-    const std::string line3("My first line!");
-    utils::baseline::StartsWith cons(pattern);
-    CHECK(cons(line1));
-    CHECK(cons(line2));
-    CHECK(!cons(line3));
-}
-
-TEST_CASE("Contains", "baseline") {
-    const std::string pattern("the");
-    const std::string line1("This is the first line!");
-    const std::string line2("Thisn't the first line!");
-    const std::string line3("My first line!");
-    utils::baseline::Contains cons(pattern);
-    CHECK(cons(line1));
-    CHECK(cons(line2));
-    CHECK(!cons(line3));
-}
-
-TEST_CASE("Equals", "baseline") {
-    const std::string pattern("My first line!");
-    const std::string line1("This is the first line!");
-    const std::string line2("Thisn't the first line!");
-    const std::string line3("My first line!");
-    utils::baseline::Equals cons(pattern);
-    CHECK(!cons(line1));
-    CHECK(!cons(line2));
-    CHECK(cons(line3));
-}
-
 TEST_CASE("StartsWith-sse2", "") {
     const std::string pattern("This");
     const std::string line1("This is the first line!");
@@ -67,12 +34,12 @@ TEST_CASE("Contains-sse2", "") {
 }
 
 TEST_CASE("Equals-sse2", "") {
-    const std::string pattern("My first line!");
+    std::string pattern("My first line!");
     const std::string line1("This is the first line!");
     const std::string line2("Thisn't the first line!");
     const std::string line3("My first line!");
 
-    utils::baseline::Equals cons(pattern);
+    utils::sse2::Equals cons(pattern);
     CHECK(!cons(line1));
     CHECK(!cons(line2));
     CHECK(cons(line3));
@@ -108,7 +75,7 @@ TEST_CASE("Equals-avx2", "") {
     const std::string line2("Thisn't the first line!");
     const std::string line3("My first line!");
 
-    utils::baseline::Equals cons(pattern);
+    utils::avx2::Equals cons(pattern);
     CHECK(!cons(line1));
     CHECK(!cons(line2));
     CHECK(cons(line3));
@@ -168,24 +135,5 @@ TEST_CASE("utils::Timestamp", "") {
         CHECK(!constraint(t1));
         CHECK(constraint(t2));
         CHECK(!constraint(t3));
-    }
-}
-
-TEST_CASE("Regular expression matcher", "utils::RegexMatcher") {
-    std::string line1("This is my first line");
-    std::string line2("This is my second line");
-    std::string line3("");
-
-    SECTION("Simple test") {
-        utils::hyperscan::RegexMatcher matcher("my.*line");
-        CHECK(matcher.is_matched(line1.data(), static_cast<unsigned int>(line1.size())));
-        CHECK(matcher.is_matched(line2.data(), static_cast<unsigned int>(line2.size())));
-        CHECK(!matcher.is_matched(line3.data(), static_cast<unsigned int>(line3.size())));
-    }
-
-    SECTION("Negative tests") {
-        utils::hyperscan::RegexMatcher matcher("foo");
-        CHECK(!matcher.is_matched(line1.data(), static_cast<unsigned int>(line1.size())));
-        CHECK(!matcher.is_matched(line2.data(), static_cast<unsigned int>(line2.size())));
     }
 }

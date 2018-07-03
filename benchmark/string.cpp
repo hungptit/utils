@@ -1,5 +1,6 @@
 #include "matchers.hpp"
 #include "strcmp.hpp"
+#include "experiments.hpp"
 #include <array>
 #include <benchmark/benchmark.h>
 
@@ -19,7 +20,7 @@ const std::string pattern("finished1234");
 
 // Basic implementation.
 void std_string_find(benchmark::State &state) {
-    utils::experiments::ExactMatch contains(pattern);
+    experiments::ExactMatch contains(pattern);
     for (auto _ : state) { benchmark::DoNotOptimize(contains.is_matched(data)); }
 }
 // Register the function as a benchmark

@@ -85,7 +85,7 @@ include_directories ("${EXTERNAL_DIR}/include")
 # Include utils headers
 include_directories ("${ROOT_DIR}/src")
 
-set(COMMAND_SRC_FILES timeutils matchers string timestamp)
+set(COMMAND_SRC_FILES timeutils matchers string timestamp regex_matchers)
 foreach (src_file ${COMMAND_SRC_FILES})
   ADD_EXECUTABLE(${src_file} ${src_file}.cpp)
   TARGET_LINK_LIBRARIES(${src_file} ${LIB_HS} ${LIB_HS_RUNTIME} -lpthread -lm)
