@@ -22,15 +22,8 @@ namespace utils {
             explicit RegexBase(const std::string &patt, const int mode) {
                 pattern = patt;
                 hs_compile_error_t *compile_err;
-<<<<<<< HEAD
-                // constexpr int mode = HS_FLAG_DOTALL | HS_FLAG_SINGLEMATCH;
-                constexpr int mode = HS_FLAG_DOTALL | HS_FLAG_SINGLEMATCH | HS_CPU_FEATURES_AVX2;
-                if (hs_compile(pattern.c_str(), mode,
-                               HS_MODE_BLOCK, nullptr, &database, &compile_err) != HS_SUCCESS) {
-=======
                 if (hs_compile(pattern.c_str(), mode, HS_MODE_BLOCK, nullptr, &database,
                                &compile_err) != HS_SUCCESS) {
->>>>>>> 5060698d39d6d689b9580d25ab39ee59a05d52dd
                     const std::string errmsg = std::string("Unable to compile pattern \"") +
                                                pattern + "\": " + compile_err->message;
                     throw std::runtime_error(errmsg);
