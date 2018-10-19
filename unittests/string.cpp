@@ -38,18 +38,18 @@ TEST_CASE("avx2_memchr", "memchr") {
     CHECK(static_cast<const char *>(memchr(line.data(), 'W', line.size())) ==
           (line.data() + 116));
 
-    // Simple tests for utils::avx2::strncmp
-    CHECK(utils::avx2::strncmp(line.data(), '*', line.size()) == NULL);
-    CHECK(utils::avx2::strncmp(line.data(), '2', line.size()) != NULL);
-    CHECK(static_cast<const char *>(utils::avx2::strncmp(line.data(), '2', line.size())) ==
+    // Simple tests for utils::avx2::memchr
+    CHECK(utils::avx2::memchr(line.data(), '*', line.size()) == nullptr);
+    CHECK(utils::avx2::memchr(line.data(), ']', line.size()) != nullptr);
+    CHECK(static_cast<const char *>(utils::avx2::memchr(line.data(), '2', line.size())) ==
           (line.data() + 2));
-    CHECK(static_cast<const char *>(utils::avx2::strncmp(line.data(), ' ', line.size())) ==
+    CHECK(static_cast<const char *>(utils::avx2::memchr(line.data(), ' ', line.size())) ==
           (line.data() + 11));
-    CHECK(static_cast<const char *>(utils::avx2::strncmp(line.data(), 'W', line.size())) ==
+    CHECK(static_cast<const char *>(utils::avx2::memchr(line.data(), 'W', line.size())) ==
           (line.data() + 116));
 
     // Simple manual test
-    auto ptr = utils::avx2::strncmp(line.data(), ']', line.size());
+    auto ptr = utils::avx2::memchr(line.data(), ']', line.size());
     fmt::print("Data: {}\n", ptr + 1);
 }
 

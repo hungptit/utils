@@ -36,8 +36,8 @@ namespace utils {
         explicit ElapsedTime() : local_timer(), message("Elapsed time: "), verbose(true) {}
         explicit ElapsedTime(const std::string &msg)
             : local_timer(), message(msg), verbose(true) {}
-        explicit ElapsedTime(const std::string &msg, bool verbose)
-            : local_timer(), message(msg), verbose(verbose) {}
+        explicit ElapsedTime(const std::string &msg, bool verbose_flag)
+            : local_timer(), message(msg), verbose(verbose_flag) {}
 
         ~ElapsedTime() {
             if (verbose) {
