@@ -40,6 +40,9 @@ add_cxx_compiler_flag(-std=c++14)
 add_cxx_compiler_flag(-Wall)
 add_cxx_compiler_flag(-flto)
 
+# Use AVX2
+# add_cxx_compiler_flag(-DUSE_AVX2)
+
 # add_cxx_compiler_flag(-Wextra)
 
 # add_cxx_compiler_flag(-Wshadow)
