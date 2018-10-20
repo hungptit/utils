@@ -24,8 +24,8 @@ namespace utils {
                 }
             }
 
-            // Fallback to memchr for the rest.
-            return static_cast<const char *>(memchr(ptr + idx, c, res));
+            // Fallback to standard memchr for the rest.
+            return static_cast<const char *>(::memchr(ptr + idx, c, res));
         }
     } // namespace avx2
 } // namespace utils

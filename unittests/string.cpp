@@ -24,32 +24,27 @@ TEST_CASE("strncmp", "SIMD implementations of strncmp") {
 #ifdef USE_AVX2
 #include "memchr.hpp"
 TEST_CASE("avx2_memchr", "memchr") {
-    const std::string line(
-        "[02/04/2018 23:42:22 job483.foo.com db.boo 103213] "
-        "{'LEVEL':'info','MESSAGE':'received\n','PREFIX':'WnfgrqwYFLwAAPQIAAAAWQ'}");
+    const std::string line("A collection of useful C++ utility classes written using C++11/14");
 
     // Simple tests for memchr
     CHECK(memchr(line.data(), '*', line.size()) == NULL);
-    CHECK(memchr(line.data(), '2', line.size()) != NULL);
-    CHECK(static_cast<const char *>(memchr(line.data(), '2', line.size())) ==
-          (line.data() + 2));
-    CHECK(static_cast<const char *>(memchr(line.data(), ' ', line.size())) ==
-          (line.data() + 11));
-    CHECK(static_cast<const char *>(memchr(line.data(), 'W', line.size())) ==
-          (line.data() + 116));
+    CHECK(memchr(line.data(), '2', line.size()) == NULL);
+    CHECK((static_cast<const char *>(memchr(line.data(), '1', line.size())) - line.data()) ==
+          60);
 
-    // Simple tests for utils::avx2::memchr
+    // // Simple tests for utils::avx2::memchr
     CHECK(utils::avx2::memchr(line.data(), '*', line.size()) == nullptr);
-    CHECK(utils::avx2::memchr(line.data(), ']', line.size()) != nullptr);
-    CHECK(static_cast<const char *>(utils::avx2::memchr(line.data(), '2', line.size())) ==
-          (line.data() + 2));
-    CHECK(static_cast<const char *>(utils::avx2::memchr(line.data(), ' ', line.size())) ==
-          (line.data() + 11));
-    CHECK(static_cast<const char *>(utils::avx2::memchr(line.data(), 'W', line.size())) ==
-          (line.data() + 116));
+    CHECK(utils::avx2::memchr(line.data(), ']', line.size()) == nullptr);
+
+    CHECK((static_cast<const char *>(utils::avx2::memchr(line.data(), '4', line.size())) -
+           line.data()) == 64);
+    CHECK((static_cast<const char *>(utils::avx2::memchr(line.data(), ' ', line.size())) -
+           line.data()) == 1);
+    CHECK((static_cast<const char *>(utils::avx2::memchr(line.data(), 'w', line.size())) -
+           line.data()) == 43);
 
     // Simple manual test
-    auto ptr = utils::avx2::memchr(line.data(), ']', line.size());
+    auto ptr = utils::avx2::memchr(line.data(), 'C', line.size());
     fmt::print("Data: {}\n", ptr + 1);
 }
 

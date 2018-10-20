@@ -12,7 +12,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # CMake build flags
 option(UTILS_ENABLE_COVERAGE "Generate coverage" OFF)
-option(UTILS_ENABLE_WERROR "Enable all warnings as errors" ON)
+option(UTILS_ENABLE_WERROR "Enable all warnings as errors" OFF)
 option(UTILS_USE_AVX2 "Enable tests for AVX2 implementations" ON)
 
 # Read the git tags to determine the project version
