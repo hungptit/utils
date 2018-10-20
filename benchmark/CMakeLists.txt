@@ -10,6 +10,11 @@ set(CMAKE_INSTALL_PREFIX "$ENV{HOME}")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+# CMake build flags
+option(UTILS_ENABLE_COVERAGE "Generate coverage" OFF)
+option(UTILS_ENABLE_WERROR "Enable all warnings as errors" OFF)
+option(UTILS_USE_AVX2 "Enable tests for AVX2 implementations" ON)
+
 include(CheckCXXCompilerFlag)
 include(AddCXXCompilerFlag)
 include(CXXFeatureCheck)
@@ -28,8 +33,14 @@ add_cxx_compiler_flag(-std=c++14)
 add_cxx_compiler_flag(-Wall)
 add_cxx_compiler_flag(-flto)
 
-# Use AVX2
-# add_cxx_compiler_flag(-DUSE_AVX2)
+# Use AVX2 if specified
+if (UTILS_USE_AVX2)
+  add_cxx_compiler_flag(-DUSE_AVX2)
+endif()
+
+if (UTILS_ENABLE_WERROR)
+  add_cxx_compiler_flag(-pedantic-errors)
+endif()
 
 # add_cxx_compiler_flag(-Wextra)
 # add_cxx_compiler_flag(-Wshadow)
@@ -38,7 +49,6 @@ add_cxx_compiler_flag(-flto)
 # add_cxx_compiler_flag(-Werror MINSIZEREL)
 
 # add_cxx_compiler_flag(-pedantic)
-# add_cxx_compiler_flag(-pedantic-errors)
 
 add_cxx_compiler_flag(-fstrict-aliasing)
 if (HAVE_CXX_FLAG_FSTRICT_ALIASING)
