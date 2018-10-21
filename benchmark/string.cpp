@@ -1,6 +1,5 @@
 #include "matchers.hpp"
 #include "strcmp.hpp"
-#include "experiments.hpp"
 #include <array>
 #include <benchmark/benchmark.h>
 
@@ -35,13 +34,6 @@ void sse2_string_find(benchmark::State &state) {
 // Register the function as a benchmark
 BENCHMARK(sse2_string_find);
 
-#include "matchers_avx2.hpp"
-void avx2_string_find(benchmark::State &state) {
-    utils::ExactMatchAVX2 contains(pattern);
-    for (auto _ : state) { benchmark::DoNotOptimize(contains.is_matched(data.data(), data.size())); }
-}
-BENCHMARK(avx2_string_find);
-
 // ==
 void string_equal(benchmark::State &state) {
     for (auto _ : state) { benchmark::DoNotOptimize(data1 == data2); }
@@ -68,18 +60,29 @@ BENCHMARK(string_memcmp);
 // SSE2 version of strncmp
 void strcmp_sse2(benchmark::State &state) {
     for (auto _ : state) {
-        benchmark::DoNotOptimize(utils::strncmp_sse2(data1.data(), data2.data(), data1.size()));
+        benchmark::DoNotOptimize(
+            utils::sse2::strncmp(data1.data(), data2.data(), data1.size()));
     }
 }
 BENCHMARK(strcmp_sse2);
 
-// avx2 version of strncmp
+// AVX2 implementation of strncmp
+#ifdef USE_AVX2
+void avx2_string_find(benchmark::State &state) {
+    utils::ExactMatchAVX2 contains(pattern);
+    for (auto _ : state) {
+        benchmark::DoNotOptimize(contains.is_matched(data.data(), data.size()));
+    }
+}
+BENCHMARK(avx2_string_find);
+
 void strcmp_avx2(benchmark::State &state) {
     for (auto _ : state) {
-        benchmark::DoNotOptimize(utils::strncmp_avx2(data1.data(), data2.data(), data1.size()));
+        benchmark::DoNotOptimize(
+            utils::avx2::strncmp(data1.data(), data2.data(), data1.size()));
     }
 }
 BENCHMARK(strcmp_avx2);
-
+#endif
 
 BENCHMARK_MAIN();

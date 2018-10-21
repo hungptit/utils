@@ -4,6 +4,10 @@
 #include <cstring>
 #include <string>
 
+#ifdef USE_AVX2
+#include "matchers_avx2.hpp"
+#endif
+
 namespace utils {
     // String matchers we should make our mathers as fast as we can.
     class AllPatterns {

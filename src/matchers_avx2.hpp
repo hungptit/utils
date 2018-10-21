@@ -1,6 +1,6 @@
 #pragma once
-#include "string_avx2.hpp"
 #include "system.hpp"
+#include "string.hpp"
 
 namespace utils {
     class ExactMatchAVX2 {
@@ -21,8 +21,4 @@ namespace utils {
         char *pattern;
         size_t buflen;
     };
-
-    namespace experiments {
-
-    } // namespace experiments
 } // namespace utils

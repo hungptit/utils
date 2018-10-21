@@ -6,13 +6,13 @@
 
 namespace utils {
     namespace hyperscan {
-        namespace {
-            // An event handle callback.
-            int event_handler(unsigned int id, unsigned long long from, unsigned long long to,
-                              unsigned int flags, void *ctx) {
-                return HS_SCAN_TERMINATED;
-            }
-        } // namespace
+        /**
+         * Default implementation for the event_handler.
+         */
+        int event_handler(unsigned int, unsigned long long, unsigned long long, unsigned int,
+                          void *) {
+            return HS_SCAN_TERMINATED;
+        }
 
         /*
          * @mode: Use HS_CPU_FEATURES_AVX2 to turn on support for AVX2.
@@ -51,12 +51,12 @@ namespace utils {
                             const int mode = (HS_FLAG_DOTALL | HS_FLAG_SINGLEMATCH))
                 : Base(patt, mode) {}
 
-            const bool operator()(const std::string &data) {
+            bool operator()(const std::string &data) {
                 if (data.empty()) return true;
                 return is_matched(data.data(), data.size());
             }
 
-            const bool is_matched(const char *data, const size_t len) {
+            bool is_matched(const char *data, const unsigned int len) {
                 if (data == nullptr) return true;
                 auto errcode = hs_scan(Base::database, data, len, 0, Base::scratch,
                                        event_handler, nullptr);
@@ -78,15 +78,15 @@ namespace utils {
                                 const int mode = (HS_FLAG_DOTALL | HS_FLAG_SINGLEMATCH))
                 : Base(patt, mode) {}
 
-            const bool operator()(const std::string &data) {
+            bool operator()(const std::string &data) {
                 if (data.empty()) return true;
                 return is_matched(data.data(), data.size());
             }
 
-            const bool is_matched(const char *data, const size_t len) {
+            bool is_matched(const char *data, const size_t len) {
                 if (data == nullptr) return true;
-                auto errcode = hs_scan(Base::database, data, len, 0, Base::scratch,
-                                       event_handler, nullptr);
+                auto errcode = hs_scan(Base::database, data, static_cast<unsigned int>(len), 0,
+                                       Base::scratch, event_handler, nullptr);
                 if (errcode == HS_SUCCESS) {
                     return true;
                 } else if (errcode == HS_SCAN_TERMINATED) {

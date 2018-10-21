@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cinttypes>
+#include <cassert>
+
 #define FORCE_INLINE inline __attribute__((always_inline))
 #define MAYBE_UNUSED inline __attribute__((unused))
 

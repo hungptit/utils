@@ -3,9 +3,7 @@
 #include <set>
 #include <string>
 #include <unordered_set>
-
 #include "string.hpp"
-#include "string_avx2.hpp"
 
 const std::array<std::string, 16> lookup_table = {
     {"PREFIX", "MESSAGE", "LEVEL", "RAW_ERROR", "RESOURCENAME", "SUBJECT", "REQUEST",
@@ -21,9 +19,9 @@ bool is_equal(const std::string &first, const std::string &second) {
 namespace {
     struct Baseline {
         bool operator()(const std::string &pattern) {
-			for (auto const & item : lookup_table) {
-				if (item == pattern) return true;
-			}
+            for (auto const &item : lookup_table) {
+                if (item == pattern) return true;
+            }
             return false;
         }
         const std::array<std::string, 16> lookup_table = {
@@ -32,9 +30,10 @@ namespace {
              "FOO3", "FOO4"}};
     };
 
-	struct StdFind {
+    struct StdFind {
         bool operator()(const std::string &pattern) {
-            return std::find(lookup_table.cbegin(), lookup_table.cend(), pattern) != lookup_table.cend();
+            return std::find(lookup_table.cbegin(), lookup_table.cend(), pattern) !=
+                   lookup_table.cend();
         }
         const std::array<std::string, 16> lookup_table = {
             {"PREFIX", "MESSAGE", "LEVEL", "RAW_ERROR", "RESOURCENAME", "SUBJECT", "REQUEST",
@@ -66,11 +65,8 @@ namespace {
         return is_equal(lookup_table[0], pattern);
     }
 
-	template <int N>
-    struct RecursiveTemplateStrcmp {
-        bool operator()(const std::string &pattern) {
-            return find_fast_strcmp<N - 1>(pattern);
-        }
+    template <int N> struct RecursiveTemplateStrcmp {
+        bool operator()(const std::string &pattern) { return find_fast_strcmp<N - 1>(pattern); }
         const std::array<std::string, N> lookup_table = {
             {"PREFIX", "MESSAGE", "LEVEL", "RAW_ERROR", "RESOURCENAME", "SUBJECT", "REQUEST",
              "SENDTIME", "DESTINATION", "SERIALIZETIME", "SENDERID", "EXCHANGE", "FOO1", "FOO2",
@@ -108,7 +104,7 @@ void benchmark_find_std(benchmark::State &state) {
     }
 }
 BENCHMARK(benchmark_find_std);
- 
+
 void benchmark_find_recursive_template(benchmark::State &state) {
     RecursiveTemplate isok;
     for (auto _ : state) {

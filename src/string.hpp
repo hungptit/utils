@@ -2,13 +2,18 @@
 // functions. See this page https://github.com/WojciechMula/sse4-strstr for more
 // information.
 #pragma once
+#include "system.hpp"
 #include <cassert>
 #include <cinttypes>
 #include <cstdlib>
 #include <cstring>
 #include <immintrin.h>
 #include <string>
-#include "system.hpp"
+
+// Include AVX2 implementation if USE_AVX2 is set.
+#ifdef USE_AVX2
+#include "string_avx2.hpp"
+#endif
 
 namespace utils {
     namespace sse2 {
