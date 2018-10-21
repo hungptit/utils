@@ -13,7 +13,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 # CMake build flags
 option(UTILS_ENABLE_COVERAGE "Generate coverage" OFF)
 option(UTILS_ENABLE_WERROR "Enable all warnings as errors" OFF)
-option(UTILS_USE_AVX2 "Enable tests for AVX2 implementations" ON)
+option(UTILS_ENABLE_WERROR "Enable all warnings as errors" OFF)
+option(UTILS_ENABLE_FLTO "Enable link time optimization" ON)
 
 include(CheckCXXCompilerFlag)
 include(AddCXXCompilerFlag)
@@ -72,6 +73,24 @@ include_directories ("${EXTERNAL_DIR}/include")
 
 # Include utils headers
 include_directories ("${ROOT_DIR}/src")
+
+# Link time optimisation
+if (BENCHMARK_ENABLE_LTO)
+  add_cxx_compiler_flag(-flto)
+  if ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
+    find_program(GCC_AR gcc-ar)
+    if (GCC_AR)
+      set(CMAKE_AR ${GCC_AR})
+    endif()
+    find_program(GCC_RANLIB gcc-ranlib)
+    if (GCC_RANLIB)
+      set(CMAKE_RANLIB ${GCC_RANLIB})
+    endif()
+  elseif("${CMAKE_C_COMPILER_ID}" STREQUAL "Clang")
+    include(llvm-toolchain)
+  endif()
+endif()
+
 
 # Used libraries
 SET(LIB_BENCHMARK "${EXTERNAL_DIR}/lib/libbenchmark.a")

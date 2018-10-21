@@ -11,7 +11,7 @@ set(CMAKE_INSTALL_PREFIX "$ENV{HOME}")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # CMake build flags
-option(UTILS_ENABLE_COVERAGE "Generate coverage" OFF)
+option(UTILS_ENABLE_COVERAGE "Generate coverage" ON)
 option(UTILS_ENABLE_WERROR "Enable all warnings as errors" OFF)
 option(UTILS_USE_AVX2 "Enable tests for AVX2 implementations" ON)
 
@@ -35,15 +35,17 @@ include(CXXFeatureCheck)
 # set(CMAKE_CXX_COMPILER "clang++")
 # add_cxx_compiler_flag(-stdlib=libc++)
 
-# set(CMAKE_BUILD_TYPE Debug)
-
-set (CMAKE_BUILD_TYPE Release)
+set(CMAKE_BUILD_TYPE Debug)
+# set (CMAKE_BUILD_TYPE Release)
 add_cxx_compiler_flag(-O3)
 add_cxx_compiler_flag(-march=native)
 
 add_cxx_compiler_flag(-std=c++14)
 add_cxx_compiler_flag(-Wall)
-add_cxx_compiler_flag(-flto)
+
+if (UTILS_ENABLE_COVERAGE)
+  add_cxx_compiler_flag(--coverage Debug)
+endif()
 
 # Use AVX2 if specified
 if (UTILS_USE_AVX2)
@@ -59,19 +61,18 @@ add_cxx_compiler_flag(-pedantic)
 add_cxx_compiler_flag(-Wshadow)
 
 add_cxx_compiler_flag(-Werror RELEASE)
-# add_cxx_compiler_flag(-Werror RELWITHDEBINFO)
-# add_cxx_compiler_flag(-Werror MINSIZEREL)
-
+add_cxx_compiler_flag(-Werror RELWITHDEBINFO)
+add_cxx_compiler_flag(-Werror MINSIZEREL)
 
 add_cxx_compiler_flag(-Wshorten-64-to-32)
-# add_cxx_compiler_flag(-Wfloat-equal)
+add_cxx_compiler_flag(-Wfloat-equal)
 add_cxx_compiler_flag(-Wint-to-void-pointer-cast)
 
 add_cxx_compiler_flag(-fstrict-aliasing)
 if (HAVE_CXX_FLAG_FSTRICT_ALIASING)
   add_cxx_compiler_flag(-Wstrict-aliasing)
 endif()
-# add_cxx_compiler_flag(-Wthread-safety)
+add_cxx_compiler_flag(-Wthread-safety)
 if (HAVE_WTHREAD_SAFETY)
   add_definitions(-DHAVE_WTHREAD_SAFETY)
   cxx_feature_check(THREAD_SAFETY_ATTRIBUTES)
@@ -79,7 +80,6 @@ endif()
 
 add_cxx_compiler_flag(-DFMT_HEADER_ONLY)
 add_cxx_compiler_flag(-DCEREAL_RAPIDJSON_HAS_CXX11_RVALUE_REFS)
-add_cxx_compiler_flag(-flto)
 
 ENABLE_TESTING()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
