@@ -2,6 +2,8 @@
 #include "string_avx2.hpp"
 #include "system.hpp"
 
+#include "string_avx2.hpp"
+
 namespace utils {
     class ExactMatchAVX2 {
       public:
@@ -21,8 +23,4 @@ namespace utils {
         char *pattern;
         size_t buflen;
     };
-
-    namespace experiments {
-
-    } // namespace experiments
 } // namespace utils

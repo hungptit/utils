@@ -124,7 +124,6 @@ namespace utils {
         }
 
         size_t avx2_strstr_v2(const char *s, size_t n, const char *needle, size_t k) {
-
             size_t result = std::string::npos;
 
             if (n < k) { return result; }
@@ -181,4 +180,4 @@ namespace utils {
             return avx2_strstr_v2(s.data(), s.size(), needle.data(), needle.size());
         }
     } // namespace avx2
-} // namespace avx2
+} // namespace utils
