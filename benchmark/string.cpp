@@ -68,7 +68,6 @@ BENCHMARK(strcmp_sse2);
 
 // AVX2 implementation of strncmp
 #ifdef USE_AVX2
-#include "matchers_avx2.hpp"
 void avx2_string_find(benchmark::State &state) {
     utils::ExactMatchAVX2 contains(pattern);
     for (auto _ : state) {
