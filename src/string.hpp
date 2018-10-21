@@ -10,7 +10,8 @@
 #include <immintrin.h>
 #include <string>
 
-#ifdef UTILS_USE_AVX2
+// Include AVX2 implementation if USE_AVX2 is set.
+#ifdef USE_AVX2
 #include "string_avx2.hpp"
 #endif
 

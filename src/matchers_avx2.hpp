@@ -1,8 +1,6 @@
 #pragma once
-#include "string_avx2.hpp"
 #include "system.hpp"
-
-#include "string_avx2.hpp"
+#include "string.hpp"
 
 namespace utils {
     class ExactMatchAVX2 {

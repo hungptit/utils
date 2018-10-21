@@ -3,6 +3,7 @@
 
 #include "fmt/format.h"
 #include "strcmp.hpp"
+#include "memchr.hpp"
 
 #define CATCH_CONFIG_MAIN
 #include "catch/catch.hpp"
@@ -22,7 +23,6 @@ TEST_CASE("strncmp", "SIMD implementations of strncmp") {
 
 // AVX2 related methods
 #ifdef USE_AVX2
-#include "memchr.hpp"
 TEST_CASE("avx2_memchr", "memchr") {
     const std::string line("A collection of useful C++ utility classes written using C++11/14");
 

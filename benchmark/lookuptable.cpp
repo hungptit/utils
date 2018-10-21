@@ -3,12 +3,7 @@
 #include <set>
 #include <string>
 #include <unordered_set>
-
 #include "string.hpp"
-
-#ifdef USE_AVX2
-#include "string_avx2.hpp"
-#endif
 
 const std::array<std::string, 16> lookup_table = {
     {"PREFIX", "MESSAGE", "LEVEL", "RAW_ERROR", "RESOURCENAME", "SUBJECT", "REQUEST",
