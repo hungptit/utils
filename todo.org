@@ -1,0 +1,2 @@
+* TODO Have AVX2 and SSE2 implementations for strcmp.
+* TODO Figure out the best approach to speedup hash table and map.
