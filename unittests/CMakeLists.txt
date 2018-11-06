@@ -13,7 +13,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 # CMake build flags
 option(UTILS_ENABLE_COVERAGE "Generate coverage" ON)
 option(UTILS_ENABLE_WERROR "Enable all warnings as errors" OFF)
-option(UTILS_USE_AVX2 "Enable tests for AVX2 implementations" ON)
+option(UTILS_USE_AVX2 "Enable tests for AVX2 implementations" OFF)
 
 # Read the git tags to determine the project version
 # include(GetGitVersion)
@@ -35,17 +35,20 @@ include(CXXFeatureCheck)
 # set(CMAKE_CXX_COMPILER "clang++")
 # add_cxx_compiler_flag(-stdlib=libc++)
 
-set(CMAKE_BUILD_TYPE Debug)
-# set (CMAKE_BUILD_TYPE Release)
-add_cxx_compiler_flag(-O3)
-add_cxx_compiler_flag(-march=native)
+if (UTILS_ENABLE_COVERAGE)
+  set(CMAKE_BUILD_TYPE Debug)
+  add_cxx_compiler_flag(-ftest-coverage)
+  add_cxx_compiler_flag(-fprofile-arcs)
+else()
+  set (CMAKE_BUILD_TYPE Release)
+  add_cxx_compiler_flag(-O3)
+  add_cxx_compiler_flag(-march=native)
+endif()
+
+message("Build type: ${CMAKE_BUILD_TYPE}")
 
 add_cxx_compiler_flag(-std=c++14)
 add_cxx_compiler_flag(-Wall)
-
-if (UTILS_ENABLE_COVERAGE)
-  add_cxx_compiler_flag(--coverage Debug)
-endif()
 
 # Use AVX2 if specified
 if (UTILS_USE_AVX2)
@@ -94,9 +97,9 @@ include_directories ("${EXTERNAL_DIR}/include")
 # Include utils headers
 include_directories ("${ROOT_DIR}/src")
 
-set(COMMAND_SRC_FILES timeutils matchers string timestamp regex_matchers)
+set(COMMAND_SRC_FILES timeutils matchers string timestamp regex_matchers random_string)
 foreach (src_file ${COMMAND_SRC_FILES})
   ADD_EXECUTABLE(${src_file} ${src_file}.cpp)
-  TARGET_LINK_LIBRARIES(${src_file} ${LIB_HS} ${LIB_HS_RUNTIME} -lpthread -lm)
+  TARGET_LINK_LIBRARIES(${src_file} ${LIB_HS} ${LIB_HS_RUNTIME} -lpthread -lm -fprofile-arcs -ftest-coverage gcov)
   ADD_TEST(${src_file} ./${src_file})
 endforeach (src_file)
