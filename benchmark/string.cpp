@@ -20,19 +20,19 @@ const std::string data2(
 const std::string pattern("finished1234");
 
 // Basic implementation.
-void std_string_find(benchmark::State &state) {
+void string_find_std(benchmark::State &state) {
     utils::experiments::ExactMatch contains(pattern);
     for (auto _ : state) { benchmark::DoNotOptimize(contains.is_matched(data)); }
 }
 // Register the function as a benchmark
-BENCHMARK(std_string_find);
+BENCHMARK(string_find_std);
 
-void sse2_string_find(benchmark::State &state) {
+void string_find_sse2(benchmark::State &state) {
     utils::sse2::Contains contains(pattern);
     for (auto _ : state) { benchmark::DoNotOptimize(contains(data)); }
 }
 // Register the function as a benchmark
-BENCHMARK(sse2_string_find);
+BENCHMARK(string_find_sse2);
 
 // ==
 void string_equal(benchmark::State &state) {
@@ -68,13 +68,13 @@ BENCHMARK(strcmp_sse2);
 
 // AVX2 implementation of strncmp
 #ifdef USE_AVX2
-void avx2_string_find(benchmark::State &state) {
+void string_find_avx2(benchmark::State &state) {
     utils::ExactMatchAVX2 contains(pattern);
     for (auto _ : state) {
         benchmark::DoNotOptimize(contains.is_matched(data.data(), data.size()));
     }
 }
-BENCHMARK(avx2_string_find);
+BENCHMARK(string_find_avx2);
 
 void strcmp_avx2(benchmark::State &state) {
     for (auto _ : state) {
