@@ -39,7 +39,7 @@ namespace utils {
 
                 while (mask != 0) {
 
-                    const auto bitpos = bits::get_first_bit_set(mask);
+                    const auto bitpos = bits:: get_first_bit_set(mask);
 
                     if (memcmp(s + i + bitpos + 1, needle + 1, k - 2) == 0) {
                         return i + bitpos;

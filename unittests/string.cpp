@@ -2,8 +2,8 @@
 #include <string>
 
 #include "fmt/format.h"
-#include "strcmp.hpp"
 #include "memchr.hpp"
+#include "strcmp.hpp"
 
 #define CATCH_CONFIG_MAIN
 #include "catch/catch.hpp"
