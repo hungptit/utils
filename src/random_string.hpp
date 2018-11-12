@@ -9,11 +9,11 @@ namespace utils {
     /**
      * A simple implementation for a random string generator.
      */
-    class CharGenerator {
+    class RandomStringGenerator {
       public:
-        CharGenerator() : rgn(std::chrono::system_clock::now().time_since_epoch().count()) {}
+        RandomStringGenerator() : rgn(std::chrono::system_clock::now().time_since_epoch().count()) {}
 
-        CharGenerator(unsigned seed) : rgn(seed) {}
+        RandomStringGenerator(unsigned seed) : rgn(seed) {}
 
         std::string operator()(const size_t len) {
             std::string str(len, 0);
