@@ -8,8 +8,8 @@
 #include "catch/catch.hpp"
 
 TEST_CASE("Constructor", "Basic tests") {
-    utils::CharGenerator gen1;
-    utils::CharGenerator gen2;
+    utils::RandomStringGenerator gen1;
+    utils::RandomStringGenerator gen2;
     fmt::print("Random string: {}\n", gen1(16));
     fmt::print("Random string: {}\n", gen2(16));
     CHECK(gen1(16) !=
