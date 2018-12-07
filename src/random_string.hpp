@@ -11,7 +11,7 @@ namespace utils {
      */
     class RandomStringGenerator {
       public:
-        RandomStringGenerator() : rgn(std::chrono::system_clock::now().time_since_epoch().count()) {}
+        RandomStringGenerator() : rgn((unsigned int)std::chrono::system_clock::now().time_since_epoch().count()) {}
 
         RandomStringGenerator(unsigned seed) : rgn(seed) {}
 
