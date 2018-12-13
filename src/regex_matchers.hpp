@@ -56,9 +56,10 @@ namespace utils {
                 return is_matched(data.data(), data.size());
             }
 
-            bool is_matched(const char *data, const unsigned int len) {
+            bool is_matched(const char *data, const size_t len) {
                 if (data == nullptr) return true;
-                auto errcode = hs_scan(Base::database, data, len, 0, Base::scratch,
+                const unsigned int buflen = static_cast<unsigned int>(len);
+                auto errcode = hs_scan(Base::database, data, buflen, 0, Base::scratch,
                                        event_handler, nullptr);
                 if (errcode == HS_SUCCESS) {
                     return false;

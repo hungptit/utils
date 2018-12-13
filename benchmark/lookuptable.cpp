@@ -1,15 +1,25 @@
+#include "string.hpp"
+#include "tsl/bhopscotch_set.h"
+#include "tsl/hopscotch_set.h"
 #include <array>
 #include <benchmark/benchmark.h>
 #include <set>
 #include <string>
 #include <unordered_set>
-#include "string.hpp"
 
 const std::array<std::string, 16> lookup_table = {
     {"PREFIX", "MESSAGE", "LEVEL", "RAW_ERROR", "RESOURCENAME", "SUBJECT", "REQUEST",
      "SENDTIME", "DESTINATION", "SERIALIZETIME", "SENDERID", "EXCHANGE"}};
 const std::set<std::string> set_lookup_table(lookup_table.cbegin(), lookup_table.cend());
-const std::set<std::string> hash_lookup_table(lookup_table.cbegin(), lookup_table.cend());
+const std::unordered_set<std::string> hash_lookup_table(lookup_table.cbegin(),
+                                                        lookup_table.cend());
+const tsl::hopscotch_set<std::string> hopscotch_set_table(lookup_table.cbegin(),
+                                                          lookup_table.cend());
+const tsl::bhopscotch_set<std::string> bhopscotch_set_table(lookup_table.cbegin(),
+                                                            lookup_table.cend());
+const tsl::hopscotch_set<std::string, std::hash<std::string>, std::equal_to<std::string>,
+                         std::allocator<std::string>, 24, true>
+    hopscotch_set_table_new(lookup_table.cbegin(), lookup_table.cend());
 
 bool is_equal(const std::string &first, const std::string &second) {
     return (first.size() != second.size()) &&
@@ -140,7 +150,7 @@ void benchmark_find_set(benchmark::State &state) {
 }
 BENCHMARK(benchmark_find_set);
 
-void benchmark_find_hash(benchmark::State &state) {
+void benchmark_find_unordered_set(benchmark::State &state) {
     for (auto _ : state) {
         benchmark::DoNotOptimize(hash_lookup_table.find(pattern1) != hash_lookup_table.end());
         benchmark::DoNotOptimize(hash_lookup_table.find(pattern2) != hash_lookup_table.end());
@@ -149,6 +159,56 @@ void benchmark_find_hash(benchmark::State &state) {
         benchmark::DoNotOptimize(hash_lookup_table.find(pattern5) != hash_lookup_table.end());
     }
 }
-BENCHMARK(benchmark_find_hash);
+BENCHMARK(benchmark_find_unordered_set);
+
+void benchmark_hopscotch_set(benchmark::State &state) {
+    for (auto _ : state) {
+        benchmark::DoNotOptimize(hopscotch_set_table.find(pattern1) !=
+                                 hopscotch_set_table.end());
+        benchmark::DoNotOptimize(hopscotch_set_table.find(pattern2) !=
+                                 hopscotch_set_table.end());
+        benchmark::DoNotOptimize(hopscotch_set_table.find(pattern3) !=
+                                 hopscotch_set_table.end());
+        benchmark::DoNotOptimize(hopscotch_set_table.find(pattern4) !=
+                                 hopscotch_set_table.end());
+        benchmark::DoNotOptimize(hopscotch_set_table.find(pattern5) !=
+                                 hopscotch_set_table.end());
+    }
+}
+BENCHMARK(benchmark_hopscotch_set);
+
+void benchmark_bhopscotch_set(benchmark::State &state) {
+    for (auto _ : state) {
+        benchmark::DoNotOptimize(bhopscotch_set_table.find(pattern1) !=
+                                 bhopscotch_set_table.end());
+        benchmark::DoNotOptimize(bhopscotch_set_table.find(pattern2) !=
+                                 bhopscotch_set_table.end());
+        benchmark::DoNotOptimize(bhopscotch_set_table.find(pattern3) !=
+                                 bhopscotch_set_table.end());
+        benchmark::DoNotOptimize(bhopscotch_set_table.find(pattern4) !=
+                                 bhopscotch_set_table.end());
+        benchmark::DoNotOptimize(bhopscotch_set_table.find(pattern5) !=
+                                 bhopscotch_set_table.end());
+    }
+}
+
+BENCHMARK(benchmark_bhopscotch_set);
+
+void benchmark_hopscotch_set_store_hash_code(benchmark::State &state) {
+    for (auto _ : state) {
+        benchmark::DoNotOptimize(hopscotch_set_table_new.find(pattern1) !=
+                                 hopscotch_set_table_new.end());
+        benchmark::DoNotOptimize(hopscotch_set_table_new.find(pattern2) !=
+                                 hopscotch_set_table_new.end());
+        benchmark::DoNotOptimize(hopscotch_set_table_new.find(pattern3) !=
+                                 hopscotch_set_table_new.end());
+        benchmark::DoNotOptimize(hopscotch_set_table_new.find(pattern4) !=
+                                 hopscotch_set_table_new.end());
+        benchmark::DoNotOptimize(hopscotch_set_table_new.find(pattern5) !=
+                                 hopscotch_set_table_new.end());
+    }
+}
+
+BENCHMARK(benchmark_hopscotch_set_store_hash_code);
 
 BENCHMARK_MAIN();
