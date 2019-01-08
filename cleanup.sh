@@ -1,7 +1,19 @@
 #!/bin/bash
+# This script will automatically cleanup all merged branches.
+# Note: This bash script required fgrep command.
+set -e
+set -x
 
-# Cleanup all merged branches
-for branch in `git branch -v  | grep gone | cut -d ' ' -f 1,2,3`; do git branch -D $branch;done;
-git fetch --prune
+# Check out and update the master branch
+git checkout master
+git pull
 
-# TODO: Make sure we can cleanup other branches.
+# Cleanup merged branches
+merged_branches=`git branch --merge | fgrep --stdin --inverse-match '(master|develop)'`
+for branch in $merged_branches; do
+    echo "Delete branch '$branch'"
+    sleep 1
+    git branch -d $branch
+done
+
+set +x
