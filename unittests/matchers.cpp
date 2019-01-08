@@ -11,10 +11,11 @@
 #include "catch/catch.hpp"
 using Catch::Matchers::Equals;
 
-TEST_CASE("StartsWith-sse2", "") {
+
+TEST_CASE("ExactMatchAVX2") {
     const std::string pattern("This");
     const std::string line1("This is the first line!");
-    const std::string line2("Thisn't the first line!");
+    const std::string line2("This n't the first line!");
     const std::string line3("My first line!");
     utils::sse2::StartsWith cons(pattern);
     CHECK(cons(line1));
