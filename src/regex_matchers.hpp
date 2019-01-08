@@ -52,12 +52,16 @@ namespace utils {
                 : Base(patt, mode) {}
 
             bool operator()(const std::string &data) {
-                if (data.empty()) return true;
+                if (data.empty()) return false;
                 return is_matched(data.data(), data.size());
             }
 
             bool is_matched(const char *data, const size_t len) {
-                if (data == nullptr) return true;
+                return ((data != nullptr) && (len > 0)) ? is_matched_uncheck(data, len) : 0;
+            }
+
+          private:
+            bool is_matched_uncheck(const char *data, const size_t len) {
                 const unsigned int buflen = static_cast<unsigned int>(len);
                 auto errcode = hs_scan(Base::database, data, buflen, 0, Base::scratch,
                                        event_handler, nullptr);
@@ -85,7 +89,11 @@ namespace utils {
             }
 
             bool is_matched(const char *data, const size_t len) {
-                if (data == nullptr) return true;
+                return ((data != nullptr) && (len > 0)) ? is_matched_uncheck(data, len) : false;
+            }
+
+          private:
+            bool is_matched_uncheck(const char *data, const size_t len) {
                 auto errcode = hs_scan(Base::database, data, static_cast<unsigned int>(len), 0,
                                        Base::scratch, event_handler, nullptr);
                 if (errcode == HS_SUCCESS) {
