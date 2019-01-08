@@ -12,6 +12,11 @@ namespace utils {
             ExactMatcher(const std::string &patt, Args...) : pattern(patt) {}
 
             bool is_matched(const char *begin, const size_t len) {
+                return ((begin != nullptr) && (len > 0)) ? is_matched_uncheck(begin, len)
+                                                         : false;
+            }
+
+            bool is_matched_uncheck(const char *begin, const size_t len) {
                 return avx2::avx2_strstr_v2(begin, len, pattern.data(), pattern.size()) !=
                        std::string::npos;
             }
@@ -29,6 +34,11 @@ namespace utils {
             ExactMatcherInv(const std::string &patt, Args...) : pattern(patt) {}
 
             bool is_matched(const char *begin, const size_t len) {
+                return ((begin != nullptr) && (len > 0)) ? is_matched_uncheck(begin, len)
+                                                         : false;
+            }
+
+            bool is_matched_uncheck(const char *begin, const size_t len) {
                 return avx2::avx2_strstr_v2(begin, len, pattern.data(), pattern.size()) ==
                        std::string::npos;
             }

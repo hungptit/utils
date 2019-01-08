@@ -68,6 +68,8 @@ TEST_CASE("ExactMatcher") {
         CHECK(matcher.is_matched(line1.data(), line1.size()));
         CHECK(matcher.is_matched(line2.data(), line2.size()));
         CHECK(!matcher.is_matched(line3.data(), line3.size()));
+        CHECK(!matcher.is_matched(nullptr, 1));
+        CHECK(!matcher.is_matched(line3.data(), 0));
     }
 
     SECTION("Inverse matcher") {
@@ -76,5 +78,7 @@ TEST_CASE("ExactMatcher") {
         CHECK(!matcher.is_matched(line1.data(), line1.size()));
         CHECK(!matcher.is_matched(line2.data(), line2.size()));
         CHECK(matcher.is_matched(line3.data(), line3.size()));
+        CHECK(!matcher.is_matched(nullptr, 1));
+        CHECK(!matcher.is_matched(line3.data(), 0));
     }
 }
