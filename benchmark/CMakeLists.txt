@@ -2,7 +2,7 @@ PROJECT(TOOLS)
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
 set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../")
-set(EXTERNAL_DIR "${ROOT_DIR}/../3p")
+set(EXTERNAL_DIR "${ROOT_DIR}/3p")
 message("ROOT_DIR: ${ROOT_DIR}")
 
 # set(CMAKE_INSTALL_PREFIX "${ROOT_DIR}")
@@ -21,7 +21,7 @@ include(AddCXXCompilerFlag)
 include(CXXFeatureCheck)
 
 # Use libc++  provided by llvm
-# set(CMAKE_CXX_COMPILER "clang++")
+set(CMAKE_CXX_COMPILER "clang++")
 # add_cxx_compiler_flag(-stdlib=libc++)
 
 # set(CMAKE_BUILD_TYPE Debug)
@@ -33,9 +33,10 @@ add_cxx_compiler_flag(-march=native)
 add_cxx_compiler_flag(-std=c++14)
 add_cxx_compiler_flag(-Wall)
 add_cxx_compiler_flag(-flto)
+add_cxx_compiler_flag(-static)
 
 # Use AVX2 if specified
-if (UTILS_USE_AVX2)
+if (USE_AVX2)
   add_cxx_compiler_flag(-DUSE_AVX2)
 endif()
 
@@ -43,13 +44,13 @@ if (UTILS_ENABLE_WERROR)
   add_cxx_compiler_flag(-pedantic-errors)
 endif()
 
-# add_cxx_compiler_flag(-Wextra)
-# add_cxx_compiler_flag(-Wshadow)
+add_cxx_compiler_flag(-Wextra)
+add_cxx_compiler_flag(-Wshadow)
+add_cxx_compiler_flag(-pedantic)
 # add_cxx_compiler_flag(-Werror RELEASE)
 # add_cxx_compiler_flag(-Werror RELWITHDEBINFO)
 # add_cxx_compiler_flag(-Werror MINSIZEREL)
 
-# add_cxx_compiler_flag(-pedantic)
 
 add_cxx_compiler_flag(-fstrict-aliasing)
 if (HAVE_CXX_FLAG_FSTRICT_ALIASING)
@@ -93,7 +94,7 @@ endif()
 
 
 # Used libraries
-SET(LIB_BENCHMARK "${EXTERNAL_DIR}/lib/libbenchmark.a")
+find_library(LIB_BENCHMARK libbenchmark.a PATHS "${EXTERNAL_DIR}/lib/" "${EXTERNAL_DIR}/lib64/" NO_DEFAULT_PATH)
 set(COMMAND_SRC_FILES string timeutils memchr lookuptable)
 foreach (src_file ${COMMAND_SRC_FILES})
   ADD_EXECUTABLE(${src_file} ${src_file}.cpp)
