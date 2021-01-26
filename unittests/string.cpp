@@ -5,12 +5,10 @@
 #include "strcmp.hpp"
 #include "memchr.hpp"
 
-#define CATCH_CONFIG_MAIN
-#include "catch/catch.hpp"
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest/doctest.h"
 
-using Catch::Matchers::Equals;
-
-TEST_CASE("strncmp", "SIMD implementations of strncmp") {
+TEST_CASE("SIMD implementations of strncmp") {
     std::string line1("Hello");
     std::string line2("Helle");
 

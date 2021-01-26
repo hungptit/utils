@@ -4,10 +4,10 @@
 #include "random_string.hpp"
 #include <time.h>
 
-#define CATCH_CONFIG_MAIN
-#include "catch/catch.hpp"
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest/doctest.h"
 
-TEST_CASE("Constructor", "Basic tests") {
+TEST_CASE("Constructor") {
     utils::RandomStringGenerator gen1;
     utils::RandomStringGenerator gen2;
     fmt::print("Random string: {}\n", gen1(16));

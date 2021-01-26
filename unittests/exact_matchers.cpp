@@ -4,9 +4,8 @@
 #include <cstring>
 #include <string>
 
-#define CATCH_CONFIG_MAIN
-#include "catch/catch.hpp"
-using Catch::Matchers::Equals;
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest/doctest.h"
 
 TEST_CASE("ExactMatcher for SSE2") {
     const std::string pattern("This");
@@ -14,7 +13,7 @@ TEST_CASE("ExactMatcher for SSE2") {
     const std::string line2("Thisn't the first line!");
     const std::string line3("My first line!");
 
-    SECTION("Regular matcher") {
+    SUBCASE("Regular matcher") {
         using Matcher = utils::sse2::ExactMatcher;
         Matcher matcher(pattern);
         CHECK(matcher.is_matched(line1.data(), line1.size()));
@@ -22,7 +21,7 @@ TEST_CASE("ExactMatcher for SSE2") {
         CHECK(!matcher.is_matched(line3.data(), line3.size()));
     }
 
-    SECTION("Inverse matcher") {
+    SUBCASE("Inverse matcher") {
         using Matcher = utils::sse2::ExactMatcherInv;
         Matcher matcher(pattern);
         CHECK(!matcher.is_matched(line1.data(), line1.size()));
@@ -38,7 +37,7 @@ TEST_CASE("ExactMatcher for AVX2") {
     const std::string line2("Thisn't the first line!");
     const std::string line3("My first line!");
 
-    SECTION("Regular matcher") {
+    SUBCASE("Regular matcher") {
         using Matcher = utils::sse2::ExactMatcher;
         Matcher matcher(pattern);
         CHECK(matcher.is_matched(line1.data(), line1.size()));
@@ -46,7 +45,7 @@ TEST_CASE("ExactMatcher for AVX2") {
         CHECK(!matcher.is_matched(line3.data(), line3.size()));
     }
 
-    SECTION("Inverse matcher") {
+    SUBCASE("Inverse matcher") {
         using Matcher = utils::sse2::ExactMatcherInv;
         Matcher matcher(pattern);
         CHECK(!matcher.is_matched(line1.data(), line1.size()));
@@ -62,7 +61,7 @@ TEST_CASE("ExactMatcher") {
     const std::string line2("Thisn't the first line!");
     const std::string line3("My first line!");
 
-    SECTION("Regular matcher") {
+    SUBCASE("Regular matcher") {
         using Matcher = utils::ExactMatcher;
         Matcher matcher(pattern);
         CHECK(matcher.is_matched(line1.data(), line1.size()));
@@ -72,7 +71,7 @@ TEST_CASE("ExactMatcher") {
         CHECK(!matcher.is_matched(line3.data(), 0));
     }
 
-    SECTION("Inverse matcher") {
+    SUBCASE("Inverse matcher") {
         using Matcher = utils::ExactMatcherInv;
         Matcher matcher(pattern);
         CHECK(!matcher.is_matched(line1.data(), line1.size()));
