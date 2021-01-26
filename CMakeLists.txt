@@ -81,8 +81,8 @@ include(dependency-graph)
 SET(LIB_HS "${CMAKE_SOURCE_DIR}/3p/lib/libhs.a")
 SET(LIB_HS_RUNTIME "${CMAKE_SOURCE_DIR}/3p/lib/libhs_runtime.a")
 
+add_subdirectory(src)
 add_subdirectory(unittests)
-
 
 # Install all header files to destination folder.
 if(NOT CMAKE_VERSION VERSION_LESS 3.0)

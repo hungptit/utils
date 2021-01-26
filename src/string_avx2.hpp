@@ -39,7 +39,7 @@ namespace utils {
             return std::string::npos;
         }
 
-#include "avx2-strstr-v2-clang-specific.cpp"
+#include "avx2-strstr-v2-clang-specific.hpp"
 
         template <size_t K>
         size_t FORCE_INLINE avx2_strstr_eq(const char *s, size_t n, const char *needle) {

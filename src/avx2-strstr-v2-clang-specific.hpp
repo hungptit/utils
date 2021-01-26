@@ -1,4 +1,3 @@
-#pragma once
 /*
     The following templates implement the loop, where K is a template parameter.
 
@@ -10,6 +9,9 @@
     Clang complains that the loop parameter `i` is a variable and it cannot be
     applied as a parameter _mm256_alignr_epi8.  GCC somehow deals with it.
 */
+
+#include <cstddef>
+#include <immintrin.h>
 
 #ifdef __clang__
 
