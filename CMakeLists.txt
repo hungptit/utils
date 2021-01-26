@@ -16,6 +16,8 @@ add_compile_options(-pedantic)
 add_compile_options(-pedantic-errors)
 add_compile_options(-static)
 
+set(USE_AVX2 ON)
+
 # Install required libraries
 include(FetchContent)
 

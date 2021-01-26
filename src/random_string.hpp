@@ -10,10 +10,10 @@ namespace utils {
     /**
      * A simple implementation for a random string generator.
      */
-    class RandomStringGenerator {
+    struct RandomStringGenerator {
       public:
-        RandomStringGenerator();
-        RandomStringGenerator(std::uint32_t seed);
+        explicit RandomStringGenerator();
+        explicit RandomStringGenerator(std::uint32_t seed);
         std::string operator()(const size_t len);
 
       private:
