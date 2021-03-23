@@ -6,7 +6,7 @@
 namespace utils {
     namespace avx2 {
         // An AVX2 implementation of memchr
-        const char *memchr(const char *ptr, const char c, const size_t len) {
+        inline const char *memchr(const char *ptr, const char c, const size_t len) {
             size_t idx = 0;
 
             // Use AVX2 for the first len - (len %32) characters.

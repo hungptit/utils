@@ -9,8 +9,8 @@ namespace utils {
         /**
          * Default implementation for the event_handler.
          */
-        int event_handler(unsigned int, unsigned long long, unsigned long long, unsigned int,
-                          void *) {
+        inline int event_handler(unsigned int, unsigned long long, unsigned long long,
+                                 unsigned int, void *) {
             return HS_SCAN_TERMINATED;
         }
 
