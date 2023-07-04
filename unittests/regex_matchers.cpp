@@ -3,7 +3,9 @@
 #include <string>
 
 #define CATCH_CONFIG_MAIN
-#include "catch/catch.hpp"
+#include "catch2/catch_test_macros.hpp"
+#include "catch2/matchers/catch_matchers_string.hpp"
+
 using Catch::Matchers::Equals;
 
 TEST_CASE("Regular expression matcher", "utils::RegexMatcher") {

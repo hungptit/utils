@@ -5,7 +5,7 @@
 #include <time.h>
 
 #define CATCH_CONFIG_MAIN
-#include "catch/catch.hpp"
+#include "catch2/catch_test_macros.hpp"
 
 TEST_CASE("Constructor", "Basic tests") {
     utils::RandomStringGenerator gen1;

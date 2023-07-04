@@ -1,13 +1,13 @@
-#include "fmt/format.h"
-#include <string>
-
-#include "timer.hpp"
 #include "timeutils.hpp"
+#include "catch2/matchers/catch_matchers_string.hpp"
+#include "fmt/format.h"
+#include "timer.hpp"
 #include "timestamp.hpp"
+#include <string>
 #include <time.h>
 
 #define CATCH_CONFIG_MAIN
-#include "catch/catch.hpp"
+#include "catch2/catch_test_macros.hpp"
 
 using Catch::Matchers::Equals;
 
@@ -46,7 +46,7 @@ TEST_CASE("Comparators", "timestamp") {
     std::string timestamp1("01/04/2018 13:42:22");
     std::string timestamp2("02/04/2018 23:00:22");
     std::string timestamp3("02/04/2018 15:31:00");
-    
+
     auto t1 = utils::parse_scribe_timestamp<utils::Timestamp>(timestamp1.data());
     auto t2 = utils::parse_scribe_timestamp<utils::Timestamp>(timestamp2.data());
     auto t3 = utils::parse_scribe_timestamp<utils::Timestamp>(timestamp3.data());
@@ -85,25 +85,25 @@ TEST_CASE("Comparators", "timestamp") {
 }
 
 TEST_CASE("utils::Timestamp", "") {
-	using value_type = utils::Timestamp;
-	value_type tm;
-	utils::TimePrinter printer("%m-%d-%Y %H:%M:%S");
-	value_type t1(2000, 1, 3, 10, 10, 9);
-	value_type t2(2018, 2, 3, 5, 21, 49);
-	value_type t3(2018, 2, 5, 0, 1, 3);
-	
-	CHECK(t1 == t1);
-	CHECK_FALSE(t1 == t2);
+    using value_type = utils::Timestamp;
+    value_type tm;
+    utils::TimePrinter printer("%m-%d-%Y %H:%M:%S");
+    value_type t1(2000, 1, 3, 10, 10, 9);
+    value_type t2(2018, 2, 3, 5, 21, 49);
+    value_type t3(2018, 2, 5, 0, 1, 3);
 
-	CHECK(t1 != t2);
-	CHECK_FALSE(t1 != t1);
+    CHECK(t1 == t1);
+    CHECK_FALSE(t1 == t2);
 
-	CHECK(t1 < t2);
-	CHECK_FALSE(t2 < t1);
-	
-	CHECK(t3 > t2);
-	CHECK_FALSE(t2 > t3);
+    CHECK(t1 != t2);
+    CHECK_FALSE(t1 != t1);
 
-	CHECK(t3 < utils::MAX_TIME);
-	CHECK(t3 > utils::MIN_TIME);
+    CHECK(t1 < t2);
+    CHECK_FALSE(t2 < t1);
+
+    CHECK(t3 > t2);
+    CHECK_FALSE(t2 > t3);
+
+    CHECK(t3 < utils::MAX_TIME);
+    CHECK(t3 > utils::MIN_TIME);
 }

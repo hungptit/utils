@@ -40,21 +40,6 @@ namespace {
              "FOO3", "FOO4"}};
     };
 
-    struct FindUsing_strcmp {
-        bool operator()(const std::string &pattern) {
-            for (auto const &item : lookup_table) {
-                if (item.size() != pattern.size()) continue;
-                const size_t len = std::min(item.size(), pattern.size());
-                if (!strncmp(item.data(), pattern.data(), len)) return true;
-            }
-            return false;
-        }
-        const std::array<std::string, 16> lookup_table = {
-            {"PREFIX", "MESSAGE", "LEVEL", "RAW_ERROR", "RESOURCENAME", "SUBJECT", "REQUEST",
-             "SENDTIME", "DESTINATION", "SERIALIZETIME", "SENDERID", "EXCHANGE", "FOO1", "FOO2",
-             "FOO3", "FOO4"}};
-    };
-
     struct StdFind {
         bool operator()(const std::string &pattern) {
             return std::find(lookup_table.cbegin(), lookup_table.cend(), pattern) !=
@@ -96,33 +81,36 @@ namespace {
             {"PREFIX", "MESSAGE", "LEVEL", "RAW_ERROR", "RESOURCENAME", "SUBJECT", "REQUEST",
              "SENDTIME", "DESTINATION", "SERIALIZETIME", "SENDERID", "EXCHANGE", "FOO1", "FOO2",
              "FOO3", "FOO4"}};
-    };
+i    };
 
 } // namespace
 
-const std::vector<std::string> patterns{"RESOURCE", "SENDERID", "PREFIX", "FOOOOOOOOOOOO",
-                                        "EXCHANGE"};
+const std::string pattern1("RESOURCE");
+const std::string pattern2("SENDERID");
+const std::string pattern3("PREFIX");
+const std::string pattern4("FOOOOO");
+const std::string pattern5("EXCHANGE");
 
 void benchmark_baseline(benchmark::State &state) {
     Baseline isok;
     for (auto _ : state) {
-        for (auto const &pattern : patterns) { benchmark::DoNotOptimize(isok(pattern)); }
+        benchmark::DoNotOptimize(isok(pattern1));
+        benchmark::DoNotOptimize(isok(pattern2));
+        benchmark::DoNotOptimize(isok(pattern3));
+        benchmark::DoNotOptimize(isok(pattern4));
+        benchmark::DoNotOptimize(isok(pattern5));
     }
 }
 BENCHMARK(benchmark_baseline);
 
-void benchmark_find_using_strcmp(benchmark::State &state) {
-    FindUsing_strcmp isok;
-    for (auto _ : state) {
-        for (auto const &pattern : patterns) { benchmark::DoNotOptimize(isok(pattern)); }
-    }
-}
-BENCHMARK(benchmark_find_using_strcmp);
-
 void benchmark_find_std(benchmark::State &state) {
     StdFind isok;
     for (auto _ : state) {
-        for (auto const &pattern : patterns) { benchmark::DoNotOptimize(isok(pattern)); }
+        benchmark::DoNotOptimize(isok(pattern1));
+        benchmark::DoNotOptimize(isok(pattern2));
+        benchmark::DoNotOptimize(isok(pattern3));
+        benchmark::DoNotOptimize(isok(pattern4));
+        benchmark::DoNotOptimize(isok(pattern5));
     }
 }
 BENCHMARK(benchmark_find_std);
@@ -130,7 +118,11 @@ BENCHMARK(benchmark_find_std);
 void benchmark_find_recursive_template(benchmark::State &state) {
     RecursiveTemplate isok;
     for (auto _ : state) {
-        for (auto const &pattern : patterns) { benchmark::DoNotOptimize(isok(pattern)); }
+        benchmark::DoNotOptimize(isok(pattern1));
+        benchmark::DoNotOptimize(isok(pattern2));
+        benchmark::DoNotOptimize(isok(pattern3));
+        benchmark::DoNotOptimize(isok(pattern4));
+        benchmark::DoNotOptimize(isok(pattern5));
     }
 }
 BENCHMARK(benchmark_find_recursive_template);
@@ -138,42 +130,65 @@ BENCHMARK(benchmark_find_recursive_template);
 void benchmark_find_strcmp(benchmark::State &state) {
     RecursiveTemplateStrcmp<16> isok;
     for (auto _ : state) {
-        for (auto const &pattern : patterns) { benchmark::DoNotOptimize(isok(pattern)); }
+        benchmark::DoNotOptimize(isok(pattern1));
+        benchmark::DoNotOptimize(isok(pattern2));
+        benchmark::DoNotOptimize(isok(pattern3));
+        benchmark::DoNotOptimize(isok(pattern4));
+        benchmark::DoNotOptimize(isok(pattern5));
     }
 }
 BENCHMARK(benchmark_find_strcmp);
 
 void benchmark_find_set(benchmark::State &state) {
     for (auto _ : state) {
-        for (auto const &pattern : patterns)
-            benchmark::DoNotOptimize(set_lookup_table.find(pattern) != set_lookup_table.end());
+        benchmark::DoNotOptimize(set_lookup_table.find(pattern1) != set_lookup_table.end());
+        benchmark::DoNotOptimize(set_lookup_table.find(pattern2) != set_lookup_table.end());
+        benchmark::DoNotOptimize(set_lookup_table.find(pattern3) != set_lookup_table.end());
+        benchmark::DoNotOptimize(set_lookup_table.find(pattern4) != set_lookup_table.end());
+        benchmark::DoNotOptimize(set_lookup_table.find(pattern5) != set_lookup_table.end());
     }
 }
 BENCHMARK(benchmark_find_set);
 
 void benchmark_find_unordered_set(benchmark::State &state) {
     for (auto _ : state) {
-        for (auto const &pattern : patterns)
-            benchmark::DoNotOptimize(hash_lookup_table.find(pattern) !=
-                                     hash_lookup_table.end());
+        benchmark::DoNotOptimize(hash_lookup_table.find(pattern1) != hash_lookup_table.end());
+        benchmark::DoNotOptimize(hash_lookup_table.find(pattern2) != hash_lookup_table.end());
+        benchmark::DoNotOptimize(hash_lookup_table.find(pattern3) != hash_lookup_table.end());
+        benchmark::DoNotOptimize(hash_lookup_table.find(pattern4) != hash_lookup_table.end());
+        benchmark::DoNotOptimize(hash_lookup_table.find(pattern5) != hash_lookup_table.end());
     }
 }
 BENCHMARK(benchmark_find_unordered_set);
 
 void benchmark_hopscotch_set(benchmark::State &state) {
     for (auto _ : state) {
-        for (auto const &pattern : patterns)
-            benchmark::DoNotOptimize(hopscotch_set_table.find(pattern) !=
-                                     hopscotch_set_table.end());
+        benchmark::DoNotOptimize(hopscotch_set_table.find(pattern1) !=
+                                 hopscotch_set_table.end());
+        benchmark::DoNotOptimize(hopscotch_set_table.find(pattern2) !=
+                                 hopscotch_set_table.end());
+        benchmark::DoNotOptimize(hopscotch_set_table.find(pattern3) !=
+                                 hopscotch_set_table.end());
+        benchmark::DoNotOptimize(hopscotch_set_table.find(pattern4) !=
+                                 hopscotch_set_table.end());
+        benchmark::DoNotOptimize(hopscotch_set_table.find(pattern5) !=
+                                 hopscotch_set_table.end());
     }
 }
 BENCHMARK(benchmark_hopscotch_set);
 
 void benchmark_bhopscotch_set(benchmark::State &state) {
     for (auto _ : state) {
-        for (auto const &pattern : patterns)
-            benchmark::DoNotOptimize(bhopscotch_set_table.find(pattern) !=
-                                     bhopscotch_set_table.end());
+        benchmark::DoNotOptimize(bhopscotch_set_table.find(pattern1) !=
+                                 bhopscotch_set_table.end());
+        benchmark::DoNotOptimize(bhopscotch_set_table.find(pattern2) !=
+                                 bhopscotch_set_table.end());
+        benchmark::DoNotOptimize(bhopscotch_set_table.find(pattern3) !=
+                                 bhopscotch_set_table.end());
+        benchmark::DoNotOptimize(bhopscotch_set_table.find(pattern4) !=
+                                 bhopscotch_set_table.end());
+        benchmark::DoNotOptimize(bhopscotch_set_table.find(pattern5) !=
+                                 bhopscotch_set_table.end());
     }
 }
 
@@ -181,9 +196,16 @@ BENCHMARK(benchmark_bhopscotch_set);
 
 void benchmark_hopscotch_set_store_hash_code(benchmark::State &state) {
     for (auto _ : state) {
-        for (auto const &pattern : patterns)
-            benchmark::DoNotOptimize(hopscotch_set_table_new.find(pattern) !=
-                                     hopscotch_set_table_new.end());
+        benchmark::DoNotOptimize(hopscotch_set_table_new.find(pattern1) !=
+                                 hopscotch_set_table_new.end());
+        benchmark::DoNotOptimize(hopscotch_set_table_new.find(pattern2) !=
+                                 hopscotch_set_table_new.end());
+        benchmark::DoNotOptimize(hopscotch_set_table_new.find(pattern3) !=
+                                 hopscotch_set_table_new.end());
+        benchmark::DoNotOptimize(hopscotch_set_table_new.find(pattern4) !=
+                                 hopscotch_set_table_new.end());
+        benchmark::DoNotOptimize(hopscotch_set_table_new.find(pattern5) !=
+                                 hopscotch_set_table_new.end());
     }
 }
 
