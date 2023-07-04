@@ -2,11 +2,12 @@
 #include <string>
 
 #include "fmt/format.h"
-#include "strcmp.hpp"
 #include "memchr.hpp"
+#include "strcmp.hpp"
 
 #define CATCH_CONFIG_MAIN
-#include "catch/catch.hpp"
+#include "catch2/catch_test_macros.hpp"
+#include "catch2/matchers/catch_matchers_string.hpp"
 
 using Catch::Matchers::Equals;
 

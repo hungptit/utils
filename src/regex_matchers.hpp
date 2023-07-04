@@ -1,6 +1,6 @@
 #pragma once
 
-#include "hs/hs.h"
+#include "hs.h"
 #include <regex>
 #include <string>
 
