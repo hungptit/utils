@@ -1,5 +1,5 @@
-PROJECT(TOOLS)
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
+project(TOOLS)
+cmake_minimum_required(VERSION 3.0)
 
 set(ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../")
 set(EXTERNAL_DIR "${ROOT_DIR}/../3p")
@@ -43,18 +43,29 @@ include(AddCXXCompilerFlag)
 include(CXXFeatureCheck)
 
 # Use AVX2 if specified
-if (UTILS_USE_AVX2)
+if(UTILS_USE_AVX2)
   add_cxx_compiler_flag(-DUSE_AVX2)
 endif()
 
 add_cxx_compiler_flag(-DFMT_HEADER_ONLY)
 
-ENABLE_TESTING()
+enable_testing()
 
-set(COMMAND_SRC_FILES timeutils matchers string timestamp exact_matchers regex_matchers random_string)
-foreach (src_file ${COMMAND_SRC_FILES})
-  ADD_EXECUTABLE(${src_file} ${src_file}.cpp)
-  target_link_libraries(${src_file} PRIVATE hs::hs hs::hs_runtime Catch2::Catch2 Catch2::Catch2WithMain)
-  target_include_directories(${src_file} PRIVATE ${fmt_SOURCE_DIR}/include/ ${ROOT_DIR}/src ${hyperscan_SOURCE_DIR}/src ${catch2_SOURCE_DIR}/src)
-  ADD_TEST(${src_file} ./${src_file})
-endforeach (src_file)
+set(COMMAND_SRC_FILES
+    timeutils
+    matchers
+    string
+    timestamp
+    exact_matchers
+    regex_matchers
+    random_string)
+foreach(src_file ${COMMAND_SRC_FILES})
+  add_executable(${src_file} ${src_file}.cpp)
+  target_link_libraries(
+    ${src_file} PRIVATE hs::hs hs::hs_runtime Catch2::Catch2
+                        Catch2::Catch2WithMain)
+  target_include_directories(
+    ${src_file} PRIVATE ${fmt_SOURCE_DIR}/include/ ${ROOT_DIR}/src
+                        ${hyperscan_SOURCE_DIR}/src ${catch2_SOURCE_DIR}/src)
+  add_test(${src_file} ./${src_file})
+endforeach(src_file)
